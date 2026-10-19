@@ -1,0 +1,12 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // La app entra con sesión anónima de Firebase Auth. Sin sesión no se lee ni se escribe nada.
+    match /{coleccion}/{id} {
+      allow read: if request.auth != null;
+      // Todo documento debe llevar la hora del servidor, que es la que usa la sincronización.
+      allow write: if request.auth != null
+                   && request.resource.data.servidorTs == request.time;
+    }
+  }
+}
