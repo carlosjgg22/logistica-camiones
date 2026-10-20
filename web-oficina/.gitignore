@@ -1,0 +1,5 @@
+node_modules/
+dist/
+# Configuración de Firebase de este proyecto: cada uno la copia de la consola (ver .env.example)
+.env
+.env.local
