@@ -1,14 +1,13 @@
 package com.flota.despacho.ui.oficina
 
+import com.flota.despacho.R
+import androidx.compose.ui.res.painterResource
 import android.content.Intent
 import android.net.Uri
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Call
-import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -68,7 +67,7 @@ fun ModuloOperadores(vm: OficinaViewModel, snackbar: SnackbarHostState, onVolver
                 }
             }
             if (visibles.isEmpty()) {
-                item { EstadoVacio(Icons.Filled.Groups, "Nadie en esta lista", "Agrega un operador o prueba con otro filtro.") }
+                item { EstadoVacio(R.drawable.ic_groups, "Nadie en esta lista", "Agrega un operador o prueba con otro filtro.") }
             }
             items(visibles, key = { it.id }) { o -> TarjetaOperador(o, ahora) { edicion = Edicion(o) } }
         }
@@ -94,7 +93,7 @@ private fun TarjetaOperador(o: OperadorEstado, ahora: Long, onEditar: () -> Unit
                 onClick = { context.startActivity(Intent(Intent.ACTION_DIAL, Uri.parse("tel:${o.telefono}"))) },
                 contentPadding = PaddingValues(horizontal = 0.dp)
             ) {
-                Icon(Icons.Filled.Call, contentDescription = null)
+                Icon(painterResource(R.drawable.ic_call_fill), contentDescription = null)
                 Spacer(Modifier.width(8.dp))
                 Text("Llamar al ${o.telefono}")
             }

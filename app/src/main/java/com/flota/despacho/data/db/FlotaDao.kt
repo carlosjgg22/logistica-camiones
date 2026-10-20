@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 const val CONSULTA_VIAJE = """
     SELECT vj.id, vj.idRuta, vj.idUnidad, vj.idOperador,
            r.numeroDespacho, r.recorrido, r.numeroFactura, vj.destino,
-           v.matricula AS vehiculo, t.matricula AS tanque,
+           v.matricula AS vehiculo, t.matricula AS tanque, t.volumenLitros, t.compartimientos,
            o.nombre || ' ' || o.apellido AS operador,
            vj.fechaSalida, vj.fechaLlegada, vj.fechaEntrega,
            p.id AS idProgramacion, p.fechaProgramada, tc.nombre AS carga
@@ -96,6 +96,14 @@ interface FlotaDao {
     )
     fun proximoViaje(idOperador: String): Flow<ViajeDetalle?>
 
+    /** El último viaje que entregó, para mostrar "Viaje terminado". */
+    @Query(
+        CONSULTA_VIAJE +
+            " WHERE vj.idOperador = :idOperador AND vj.fechaEntrega IS NOT NULL" +
+            " ORDER BY vj.fechaEntrega DESC LIMIT 1"
+    )
+    fun ultimoTerminado(idOperador: String): Flow<ViajeDetalle?>
+
     // ---------- Listas de la oficina ----------
     @Query(CONSULTA_VIAJE + " ORDER BY COALESCE(vj.fechaSalida, p.fechaProgramada, vj.actualizado) DESC")
     fun viajes(): Flow<List<ViajeDetalle>>
@@ -129,7 +137,7 @@ interface FlotaDao {
         """
         SELECT u.id, u.idOperador, v.matricula AS vehiculo, v.descripcion AS descripcionVehiculo,
                t.matricula AS tanque, t.volumenLitros, t.compartimientos, t.idTipoCombustible,
-               tc.nombre AS combustible, o.nombre || ' ' || o.apellido AS operador,
+               tc.nombre AS combustible, o.nombre || ' ' || o.apellido AS operador, o.nombre AS nombreOperador,
                EXISTS(SELECT 1 FROM viaje vj WHERE vj.idUnidad = u.id AND $EN_RUTA) AS enUso
         FROM unidad u
         JOIN vehiculo v ON v.id = u.idVehiculo

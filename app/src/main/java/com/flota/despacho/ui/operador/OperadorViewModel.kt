@@ -18,16 +18,19 @@ data class OperadorUi(
     /** Ya salió: le falta la llegada o la entrega. */
     val viajeAbierto: ViajeDetalle? = null,
     /** Programado por la oficina, todavía no salió. */
-    val proximo: ViajeDetalle? = null
+    val proximo: ViajeDetalle? = null,
+    /** El último que entregó (para "Viaje terminado"). */
+    val terminado: ViajeDetalle? = null
 )
 
 class OperadorViewModel(private val repo: FlotaRepository, private val idOperador: String) : ViewModel() {
 
     val ui: StateFlow<OperadorUi> = combine(
         repo.viajeAbierto(idOperador),
-        repo.proximoViaje(idOperador)
-    ) { abierto, proximo ->
-        OperadorUi(cargando = false, viajeAbierto = abierto, proximo = proximo)
+        repo.proximoViaje(idOperador),
+        repo.ultimoTerminado(idOperador)
+    ) { abierto, proximo, terminado ->
+        OperadorUi(cargando = false, viajeAbierto = abierto, proximo = proximo, terminado = terminado)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), OperadorUi())
 
     val pendientes: StateFlow<Int> = repo.pendientes()

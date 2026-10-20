@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400..600,0..1,0" rel="stylesheet">
+<style>body{margin:0;font-family:'IBM Plex Sans',system-ui,sans-serif;color:#15181C}a{color:#0B4F8A}a:hover{color:#15181C}.material-symbols-rounded{font-variation-settings:'FILL' 0,'wght' 500;user-select:none}</style>
+</helmet>
+<div style="width:372px;height:780px;border-radius:44px;background:#101318;padding:10px;box-sizing:border-box;font-family:'IBM Plex Sans',sans-serif;color:#15181C">
+<div style="position:relative;height:100%;border-radius:34px;background:#F4F6F9;overflow:hidden;display:flex;flex-direction:column">
+<div style="height:36px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 22px;font-size:13px;font-weight:600"><span>09:12</span><div style="display:flex;gap:4px;align-items:center"><span class="material-symbols-rounded" style="font-variation-settings:'FILL' 1,'wght' 500;font-size:16px">signal_cellular_alt</span><span class="material-symbols-rounded" style="font-variation-settings:'FILL' 1,'wght' 500;font-size:16px">battery_5_bar</span></div></div>
+
+<sc-if value="{{ isLogin }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;display:flex;flex-direction:column;padding:28px 22px 26px;gap:16px">
+<div style="width:64px;height:64px;border-radius:50%;background:#D3E4FF;color:#001C38;display:flex;align-items:center;justify-content:center"><span class="material-symbols-rounded" style="font-variation-settings:'FILL' 1,'wght' 500;font-size:34px">apartment</span></div>
+<div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:14px;font-weight:600;color:#0B4F8A">LogisticaGarcía · Despachos</span><span style="font-size:28px;font-weight:700;line-height:1.15">Entrar a la oficina</span></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;border:1px solid #72787E;border-radius:99px;overflow:hidden;font-size:14px;font-weight:600"><span style="height:40px;display:flex;align-items:center;justify-content:center;color:#424850">Operador</span><span style="height:40px;display:flex;align-items:center;justify-content:center;gap:6px;background:#D3E4FF;color:#001C38;border-left:1px solid #72787E"><span class="material-symbols-rounded" style="font-size:18px">check</span>Administrador</span></div>
+<div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:13px;font-weight:500;color:#424850">Correo</span><div style="height:56px;border:2px solid #0B4F8A;border-radius:12px;padding:0 14px;font-size:16px;background:#fff;display:flex;align-items:center;box-sizing:border-box">admin@logisticagarcia.com</div></div>
+<div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:13px;font-weight:500;color:#424850">Contraseña</span><div style="height:56px;border:1px solid #72787E;border-radius:12px;padding:0 10px 0 14px;font-size:18px;letter-spacing:.2em;background:#fff;display:flex;align-items:center;box-sizing:border-box"><span style="flex:1">••••••••</span><span class="material-symbols-rounded" style="color:#424850;letter-spacing:0">visibility</span></div></div>
+<div style="display:flex;gap:8px;align-items:center;font-size:14px"><span class="material-symbols-rounded" style="font-variation-settings:'FILL' 1,'wght' 500;color:#0B4F8A">check_box</span>Mantener la sesión iniciada</div>
+<div style="height:64px;border-radius:18px;background:#0B4F8A;color:#fff;font-size:18px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:12px"><span class="material-symbols-rounded" style="font-variation-settings:'FILL' 1,'wght' 500;font-size:26px">login</span>Entrar</div>
+<div style="flex:1"></div>
+<span style="font-size:13px;color:#424850;text-align:center">El mismo usuario sirve para el panel de la PC.</span>
+</div>
+</sc-if>
+
+<sc-if value="{{ isMenu }}" hint-placeholder-val="{{ false }}">
+<div style="height:60px;flex:none;display:flex;align-items:center;padding:0 8px 0 20px"><span style="flex:1;font-size:22px;font-weight:600">Oficina</span><span class="material-symbols-rounded" style="width:48px;text-align:center;color:#424850">refresh</span><span class="material-symbols-rounded" style="width:48px;text-align:center;color:#424850">logout</span></div>
+<div style="padding:8px 16px;background:#E2E7EE;color:#424850;font-size:14px">Datos actualizados a las 09:12</div>
+<div style="flex:1;overflow:hidden;padding:16px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;gap:12px;align-items:center;padding:14px 16px;border-radius:16px;background:#0B4F8A;color:#fff"><span class="material-symbols-rounded" style="font-variation-settings:'FILL' 1,'wght' 500;font-size:30px">local_shipping</span><span style="flex:1;display:flex;flex-direction:column;gap:2px"><span style="font-size:13px;opacity:.85">Ahora</span><span style="font-size:17px;font-weight:700">2 en ruta · 1 por salir</span></span><span class="material-symbols-rounded">chevron_right</span></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+<sc-for list="{{ mods }}" as="m" hint-placeholder-count="7"><div style="min-height:104px;border-radius:16px;background:#fff;box-shadow:0 1px 3px rgba(21,24,28,.12);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:10px"><span style="width:48px;height:48px;border-radius:50%;background:#D3E4FF;color:#001C38;display:flex;align-items:center;justify-content:center"><span class="material-symbols-rounded" style="font-variation-settings:'FILL' 1,'wght' 500;font-size:26px">{{ m.icon }}</span></span><span style="font-size:15.5px;font-weight:700">{{ m.t }}</span><span style="font-size:13.5px;color:#424850">{{ m.res }}</span></div></sc-for>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isList }}" hint-placeholder-val="{{ true }}">
+<div style="height:60px;flex:none;display:flex;align-items:center;padding:0 16px 0 4px;gap:4px"><span class="material-symbols-rounded" style="width:48px;text-align:center">arrow_back</span><span style="font-size:22px;font-weight:600">{{ title }}</span></div>
+<div style="flex:1;overflow:hidden;padding:4px 16px 16px;display:flex;flex-direction:column;gap:12px">
+<sc-if value="{{ head }}" hint-placeholder-val="{{ false }}"><span style="font-size:20px;font-weight:700;line-height:1.25">{{ head }}</span></sc-if>
+<sc-if value="{{ chips.length }}" hint-placeholder-val="{{ false }}"><div style="display:flex;gap:8px;overflow:hidden"><sc-for list="{{ chips }}" as="c" hint-placeholder-count="3"><span style="flex:none;height:32px;padding:0 12px;border:1px solid {{ c.border }};border-radius:8px;background:{{ c.bg }};color:{{ c.color }};font-size:14px;font-weight:500;display:flex;align-items:center">{{ c.label }}</span></sc-for></div></sc-if>
+<sc-for list="{{ items }}" as="it" hint-placeholder-count="4"><div style="background:#fff;border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:4px;box-shadow:0 1px 2px rgba(21,24,28,.08);border:1px solid {{ it.border }}">
+<div style="display:flex;align-items:center;gap:8px"><span style="flex:1;font-size:17px;font-weight:700">{{ it.t }}</span><sc-if value="{{ it.label }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;font-weight:600;padding:3px 10px;border-radius:99px;color:{{ it.c }};background:{{ it.bg }}">{{ it.label }}</span></sc-if></div>
+<span style="font-size:15px">{{ it.s1 }}</span><span style="font-size:14px;color:#424850">{{ it.s2 }}</span>
+<sc-if value="{{ it.call }}" hint-placeholder-val="{{ false }}"><span style="display:flex;gap:8px;align-items:center;color:#0B4F8A;font-size:14px;font-weight:600;margin-top:4px"><span class="material-symbols-rounded" style="font-variation-settings:'FILL' 1,'wght' 500;font-size:20px">call</span>Llamar al {{ it.call }}</span></sc-if>
+</div></sc-for>
+</div>
+<div style="position:absolute;right:16px;bottom:20px;height:56px;padding:0 20px 0 16px;border-radius:16px;background:#D3E4FF;color:#001C38;font-size:15px;font-weight:600;display:flex;align-items:center;gap:10px;box-shadow:0 3px 8px rgba(0,0,0,.18)"><span class="material-symbols-rounded" style="font-variation-settings:'FILL' 1,'wght' 500">add</span>{{ add }}</div>
+</sc-if>
+
+<sc-if value="{{ isForm }}" hint-placeholder-val="{{ false }}">
+<div style="height:60px;flex:none;display:flex;align-items:center;padding:0 16px 0 4px;gap:4px"><span class="material-symbols-rounded" style="width:48px;text-align:center">arrow_back</span><span style="font-size:22px;font-weight:600">Programar viaje</span></div>
+<div style="flex:1;overflow:hidden;padding:8px 16px 20px;display:flex;flex-direction:column;gap:16px">
+<sc-for list="{{ fields }}" as="f" hint-placeholder-count="3"><div style="display:flex;flex-direction:column;gap:4px"><div style="position:relative;height:58px;border:1px solid #72787E;border-radius:6px;background:#fff;display:flex;align-items:center;padding:0 10px 0 14px"><span style="position:absolute;top:-9px;left:10px;padding:0 4px;background:#fff;font-size:12px;color:#424850">{{ f.label }}</span><span style="flex:1;font-size:16px">{{ f.value }}</span><span class="material-symbols-rounded" style="color:#424850">arrow_drop_down</span></div><span style="font-size:12.5px;color:{{ f.helpColor }};padding:0 14px">{{ f.help }}</span></div></sc-for>
+<div style="height:56px;border:1px solid #72787E;border-radius:99px;display:flex;align-items:center;justify-content:center;gap:10px;font-size:15px;font-weight:600;color:#0B4F8A"><span class="material-symbols-rounded">calendar_today</span>Fecha: Martes 20 de octubre</div>
+<div style="flex:1"></div>
+<div style="display:flex;gap:10px;align-items:center;padding:10px 14px;border-radius:12px;background:#E2E7EE;font-size:14px;line-height:1.35"><span class="material-symbols-rounded">info</span>Al programar, Pedro verá el viaje en su teléfono.</div>
+<div style="min-height:64px;border-radius:18px;background:#0B4F8A;color:#fff;font-size:18px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:12px"><span class="material-symbols-rounded" style="font-variation-settings:'FILL' 1,'wght' 500;font-size:26px">edit_calendar</span>Programar viaje</div>
+</div>
+</sc-if>
+</div></div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:372,&quot;height&quot;:780},&quot;pantalla&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;login&quot;,&quot;menu&quot;,&quot;programacion&quot;,&quot;viajes&quot;,&quot;operadores&quot;,&quot;unidades&quot;,&quot;programar&quot;],&quot;default&quot;:&quot;menu&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+const E = { SIN: ['Sin programar', '#616870'], PROG: ['Programado', '#3949AB'], RUTA: ['En ruta', '#B35300'], COMP: ['Completado', '#2E7D32'], DISP: ['Disponible', '#2E7D32'], VIAJE: ['En viaje', '#B35300'], LIBRE: ['Libre', '#2E7D32'] };
+const it = (t, k, s1, s2, x = {}) => ({ t, s1, s2, label: k ? E[k][0] : '', c: k ? E[k][1] : '', bg: k ? E[k][1] + '24' : '', border: 'transparent', call: '', ...x });
+const chip = (label, on) => ({ label, bg: on ? '#D3E4FF' : '#fff', color: on ? '#001C38' : '#424850', border: on ? '#D3E4FF' : '#72787E' });
+const MODS = [['Operadores', 'groups', '5 operadores'], ['Viajes', 'route', '6 viajes'], ['Programación', 'edit_calendar', '3 en curso'], ['Unidades', 'hub', '3 unidades'], ['Rutas', 'map', '6 rutas'], ['Tanques', 'propane_tank', '4 tanques'], ['Vehículos', 'local_shipping', '4 vehículos']];
+const L = {
+  programacion: { title: 'Programación', add: 'Programar', head: 'Viajes en curso: 2 en ruta, 1 por salir', chips: [], items: [
+    it('Despacho 1042', 'RUTA', 'Destino: Estación Norte 14', 'Juan Pérez · salió 06:42, lleva 2 h 30 min'),
+    it('Despacho 1038', 'RUTA', 'Destino: Estación Sur 08', 'María López · salió 06:10, lleva 3 h 2 min'),
+    it('Despacho 1045', 'PROG', 'Destino: Estación Poniente 05', 'Pedro Gómez · mañana, carga Diésel')] },
+  viajes: { title: 'Viajes', add: 'Agregar viaje', head: '', chips: [chip('Todos (6)', true), chip('Sin programar (2)'), chip('En ruta (2)')], items: [
+    it('Despacho 1044', 'SIN', 'Destino: Estación Centro 02', 'Sin unidad asignada'),
+    it('Despacho 1042', 'RUTA', 'Destino: Estación Norte 14', 'Unidad A12BC3D + tanque T-0458, Juan Pérez'),
+    it('Despacho 1035', 'COMP', 'Destino: Estación Oriente 11', 'Salida 04:40 · llegada 06:05 · 1 h 25 min'),
+    it('Despacho 1046', 'SIN', 'Destino: Estación Sur 02', 'Sin unidad asignada')] },
+  operadores: { title: 'Operadores', add: 'Agregar operador', head: '3 disponibles, 2 en viaje', chips: [chip('Todos', true), chip('Disponibles'), chip('En viaje')], items: [
+    it('Juan Pérez', 'VIAJE', 'En la unidad del vehículo A12BC3D', 'Salió 06:42 rumbo a Estación Norte 14', { call: '0412 555 0142' }),
+    it('María López', 'VIAJE', 'En la unidad del vehículo B34KL9M', 'Salió 06:10 rumbo a Estación Sur 08', { call: '0414 555 0198' }),
+    it('Pedro Gómez', 'DISP', 'En la unidad del vehículo C56PQ2R', 'Próximo: Despacho 1045 (mañana)', { call: '0416 555 0107' })] },
+  unidades: { title: 'Unidades', add: 'Conformar unidad', head: '', chips: [], items: [
+    it('A12BC3D', 'RUTA', 'Tanque T-0458 · 30.000 L · Diésel', 'Juan Pérez · Kenworth T800'),
+    it('B34KL9M', 'RUTA', 'Tanque T-0312 · 20.000 L · Gasolina', 'María López · International 7600'),
+    it('C56PQ2R', 'LIBRE', 'Tanque T-0520 · 36.000 L · Diésel', 'Pedro Gómez · Mack Granite')] }
+};
+class Component extends DCLogic {
+  renderVals() {
+    const k = this.props.pantalla ?? 'menu', l = L[k] || L.programacion;
+    return {
+      isLogin: k === 'login', isMenu: k === 'menu', isForm: k === 'programar', isList: !!L[k],
+      mods: MODS.map(([t, icon, res]) => ({ t, icon, res })),
+      title: l.title, add: l.add, head: l.head, chips: l.chips, items: l.items,
+      fields: [
+        { label: 'Viaje', value: 'Despacho 1045 a Estación Poniente 05', help: '', helpColor: '#424850' },
+        { label: 'Unidad', value: 'C56PQ2R + T-0520 · Pedro Gómez', help: 'Tanque de 36.000 L para Diésel', helpColor: '#424850' },
+        { label: 'Tipo de carga', value: 'Diésel', help: 'La carga que lleva el tanque; se puede cambiar.', helpColor: '#424850' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

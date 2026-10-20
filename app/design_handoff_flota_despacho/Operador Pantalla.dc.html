@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400..600,0..1,0" rel="stylesheet">
+<style>body{margin:0;font-family:'IBM Plex Sans',system-ui,sans-serif;color:#15181C}a{color:#0B4F8A}a:hover{color:#15181C}.material-symbols-rounded{font-variation-settings:'FILL' 0,'wght' 500;user-select:none}</style>
+</helmet>
+<div style="width:372px;height:780px;border-radius:44px;background:#101318;padding:10px;box-sizing:border-box;font-family:'IBM Plex Sans',sans-serif;color:#15181C">
+<div style="position:relative;height:100%;border-radius:34px;background:#F4F6F9;overflow:hidden;display:flex;flex-direction:column">
+<div style="height:36px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 22px;font-size:13px;font-weight:600"><span>{{ clock }}</span><div style="display:flex;gap:4px;align-items:center"><span class="material-symbols-rounded" style="font-variation-settings:'FILL' 1,'wght' 500;font-size:16px">{{ sig }}</span><span class="material-symbols-rounded" style="font-variation-settings:'FILL' 1,'wght' 500;font-size:16px">battery_5_bar</span></div></div>
+
+<sc-if value="{{ isLogin }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;display:flex;flex-direction:column;padding:40px 22px 28px;gap:16px">
+<div style="width:72px;height:72px;border-radius:50%;background:#D3E4FF;color:#001C38;display:flex;align-items:center;justify-content:center"><span class="material-symbols-rounded" style="font-variation-settings:'FILL' 1,'wght' 500;font-size:38px">local_shipping</span></div>
+<div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:14px;font-weight:600;color:#0B4F8A">LogisticaGarcía · Despachos</span><span style="font-size:28px;font-weight:700;line-height:1.15">Entra con tu cédula</span></div>
+<div style="display:flex;flex-direction:column;gap:6px;margin-top:8px"><span style="font-size:13px;font-weight:500;color:#424850">Cédula</span><div style="height:60px;border:2px solid #0B4F8A;border-radius:12px;padding:0 16px;font:600 22px 'IBM Plex Mono',monospace;background:#fff;display:flex;align-items:center;box-sizing:border-box">12345678</div></div>
+<div style="height:68px;border-radius:18px;background:#0B4F8A;color:#fff;font-size:18px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:12px"><span class="material-symbols-rounded" style="font-variation-settings:'FILL' 1,'wght' 500;font-size:26px">login</span>Entrar</div>
+<div style="flex:1"></div>
+<div style="display:flex;align-items:center;justify-content:center;gap:8px;font-size:14px;color:#424850"><span class="material-symbols-rounded" style="font-size:20px">apartment</span>¿Eres de la oficina? Entra con PIN</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isApp }}" hint-placeholder-val="{{ true }}">
+<div style="height:60px;flex:none;display:flex;align-items:center;padding:0 8px 0 20px;gap:8px"><span style="flex:1;font-size:22px;font-weight:600">Hola, Juan</span><span class="material-symbols-rounded" style="width:48px;text-align:center;color:#424850">logout</span></div>
+<div style="flex:1;min-height:0;overflow:hidden;padding:4px 16px 12px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;gap:10px;align-items:center;padding:10px 14px;border-radius:12px;background:{{ syncBg }};color:{{ syncColor }};font-size:14.5px;line-height:1.35"><span class="material-symbols-rounded" style="font-variation-settings:'FILL' 1,'wght' 500;">{{ syncIcon }}</span><span>{{ syncText }}</span></div>
+<sc-if value="{{ isOpen }}" hint-placeholder-val="{{ true }}">
+<div style="background:#fff;border-radius:16px;box-shadow:0 1px 3px rgba(21,24,28,.12),0 1px 2px rgba(21,24,28,.06);padding:16px 18px;display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;align-items:center;gap:8px"><span style="flex:1;font-size:18px;font-weight:700">Despacho 1042</span><span style="font-size:14px;font-weight:600;padding:4px 12px;border-radius:99px;color:{{ estC }};background:{{ estBg }}">{{ estL }}</span></div>
+<sc-for list="{{ datos }}" as="d" hint-placeholder-count="4"><div style="display:flex;gap:14px;align-items:flex-start"><span class="material-symbols-rounded" style="color:#0B4F8A;margin-top:2px">{{ d.icon }}</span><div style="display:flex;flex-direction:column;gap:1px;min-width:0"><span style="font-size:12px;font-weight:500;color:#424850">{{ d.label }}</span><span style="font-size:{{ d.size }};font-weight:{{ d.weight }};line-height:1.3">{{ d.value }}</span></div></div></sc-for>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding-top:14px;border-top:1px solid #E2E7EE">
+<sc-for list="{{ track }}" as="t" hint-placeholder-count="3"><div style="display:flex;flex-direction:column;gap:6px"><div style="height:4px;border-radius:2px;background:{{ t.bar }}"></div><span style="font-size:12px;font-weight:600;color:{{ t.color }}">{{ t.label }}</span><span style="font:600 13px 'IBM Plex Mono',monospace;color:{{ t.color }}">{{ t.h }}</span></div></sc-for>
+</div>
+</div>
+</sc-if>
+<sc-if value="{{ isFin }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px;padding:40px 12px">
+<span class="material-symbols-rounded" style="font-variation-settings:'FILL' 1,'wght' 500;font-size:64px;color:#2E7D32">task_alt</span>
+<span style="font-size:22px;font-weight:700">Viaje terminado</span>
+<span style="font-size:17px;color:#424850;line-height:1.45">Despacho 1042 a Estación Norte 14.<br>Duración 1 h 33 min · entrega a las 08:40</span>
+<span style="font-size:15px;color:#424850;margin-top:8px">Cuando la oficina te programe otro viaje aparecerá aquí.</span>
+</div>
+</sc-if>
+</div>
+<sc-if value="{{ isOpen }}" hint-placeholder-val="{{ true }}">
+<div style="flex:none;padding:0 16px 18px;display:flex;flex-direction:column;gap:10px">
+<span style="font-size:20px;font-weight:700">{{ pasoT }}</span>
+<div style="display:flex;align-items:center;gap:14px;padding:12px 16px;border:1px solid #72787E;border-radius:12px;background:#fff"><span class="material-symbols-rounded" style="font-size:30px;color:#0B4F8A">schedule</span><span style="flex:1;display:flex;flex-direction:column;gap:1px"><span style="font-size:12px;font-weight:500;color:#424850">{{ pasoLbl }}</span><span style="font-size:22px;font-weight:700">{{ horaTxt }}</span><span style="font-size:13.5px;color:#424850">Toca para cambiar la hora</span></span><span class="material-symbols-rounded" style="color:#424850">edit</span></div>
+<div style="min-height:68px;border-radius:18px;background:{{ pasoBg }};color:#fff;font-size:18px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:12px;padding:0 16px"><span class="material-symbols-rounded" style="font-variation-settings:'FILL' 1,'wght' 500;font-size:28px">{{ pasoIcon }}</span>{{ pasoT }}</div>
+</div>
+</sc-if>
+</sc-if>
+
+<sc-if value="{{ isHora }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;background:rgba(16,19,24,.45);display:flex;align-items:flex-end">
+<div style="width:100%;background:#fff;border-radius:28px 28px 0 0;padding:22px 20px 26px;display:flex;flex-direction:column;gap:18px;box-sizing:border-box">
+<span style="font-size:20px;font-weight:600">Hora de salida</span>
+<div style="display:flex;align-items:center;justify-content:center;gap:12px">
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><span class="material-symbols-rounded" style="width:56px;height:44px;border-radius:12px;background:#EDF0F4;display:flex;align-items:center;justify-content:center">expand_less</span><span style="width:96px;height:80px;border-radius:12px;background:#D3E4FF;color:#001C38;display:flex;align-items:center;justify-content:center;font:600 46px 'IBM Plex Mono',monospace">06</span><span class="material-symbols-rounded" style="width:56px;height:44px;border-radius:12px;background:#EDF0F4;display:flex;align-items:center;justify-content:center">expand_more</span></div>
+<span style="font:600 46px 'IBM Plex Mono',monospace">:</span>
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><span class="material-symbols-rounded" style="width:56px;height:44px;border-radius:12px;background:#EDF0F4;display:flex;align-items:center;justify-content:center">expand_less</span><span style="width:96px;height:80px;border-radius:12px;background:#EDF0F4;display:flex;align-items:center;justify-content:center;font:600 46px 'IBM Plex Mono',monospace">42</span><span class="material-symbols-rounded" style="width:56px;height:44px;border-radius:12px;background:#EDF0F4;display:flex;align-items:center;justify-content:center">expand_more</span></div>
+</div>
+<div style="display:flex;gap:8px;align-items:center;font-size:15px;font-weight:600;color:#0B4F8A"><span style="margin-right:auto;padding:0 14px">Usar hora actual</span><span style="padding:0 14px">Cancelar</span><span style="height:44px;padding:0 20px;border-radius:99px;background:#0B4F8A;color:#fff;display:flex;align-items:center">Aceptar</span></div>
+</div></div>
+</sc-if>
+
+<sc-if value="{{ isConfirm }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;background:rgba(16,19,24,.45);display:flex;align-items:center;justify-content:center;padding:24px">
+<div style="width:100%;background:#fff;border-radius:28px;padding:24px;display:flex;flex-direction:column;gap:14px;box-sizing:border-box">
+<span style="font-size:22px;font-weight:600;line-height:1.25">¿Registrar salida?</span>
+<span style="font-size:17px;color:#424850">Hora de salida: 06:42.</span>
+<div style="display:flex;gap:8px;justify-content:flex-end;align-items:center;margin-top:6px;font-size:15px;font-weight:600"><span style="padding:0 14px;color:#0B4F8A">Cancelar</span><span style="height:44px;padding:0 18px;border-radius:99px;background:#0B4F8A;color:#fff;display:flex;align-items:center">Registrar salida</span></div>
+</div></div>
+</sc-if>
+
+<sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;left:14px;right:14px;bottom:18px;padding:14px 16px;border-radius:8px;background:#2B3038;color:#fff;font-size:15px;box-shadow:0 4px 14px rgba(0,0,0,.25)">{{ toast }}</div></sc-if>
+</div></div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:372,&quot;height&quot;:780},&quot;pantalla&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;login&quot;,&quot;salida&quot;,&quot;hora&quot;,&quot;confirmar&quot;,&quot;llegada&quot;,&quot;entrega&quot;,&quot;fin&quot;],&quot;default&quot;:&quot;salida&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+const S = {
+  login: { clock: '06:35' },
+  salida: { clock: '06:38', paso: 0, est: ['Programado', '#3949AB'], hora: 'Ahora, 06:38' },
+  hora: { clock: '06:51', paso: 0, est: ['Programado', '#3949AB'], hora: 'Ahora, 06:51', hora2: true },
+  confirmar: { clock: '06:51', paso: 0, est: ['Programado', '#3949AB'], hora: 'Hoy a las 06:42', confirm: true },
+  llegada: { clock: '08:15', paso: 1, est: ['En ruta', '#B35300'], hora: 'Ahora, 08:15', toast: 'Salida registrada. Buen viaje.', pend: 1 },
+  entrega: { clock: '08:40', paso: 2, est: ['Completado', '#2E7D32'], hora: 'Ahora, 08:40', toast: 'Llegada registrada. Viaje de 1 h 33 min.' },
+  fin: { clock: '08:41', paso: 3, toast: 'Entrega registrada. Viaje terminado.' }
+};
+const PASOS = [['Registrar salida', 'Hora de salida', 'local_shipping', '#C25A00'], ['Registrar llegada', 'Hora de llegada', 'flag', '#0B4F8A'], ['Registrar entrega del producto', 'Hora de entrega', 'inventory_2', '#0B4F8A']];
+class Component extends DCLogic {
+  renderVals() {
+    const k = this.props.pantalla ?? 'salida', s = S[k] || S.salida, p = s.paso ?? 0, P = PASOS[Math.min(p, 2)];
+    const times = ['06:42', '08:15', '08:40'];
+    const extra = p === 0 ? { icon: 'calendar_today', label: 'Fecha', value: 'Lunes 19 de octubre' } : p === 1 ? { icon: 'timer', label: 'Tiempo en ruta', value: '1 h 33 min' } : { icon: 'timer', label: 'Duración', value: '1 h 33 min' };
+    const datos = [
+      { icon: 'place', label: 'Destino', value: 'Estación Norte 14', big: true },
+      { icon: 'local_shipping', label: 'Unidad', value: 'Vehículo A12BC3D con tanque T-0458' },
+      { icon: 'local_gas_station', label: 'Carga', value: 'Diésel · 30.000 L en 3 compartimientos' }, extra
+    ].map(d => ({ ...d, size: d.big ? '22px' : '16px', weight: d.big ? 700 : 400 }));
+    const track = ['Salida', 'Llegada', 'Entrega'].map((label, i) => ({ label, h: i < p ? times[i] : '—', bar: i < p ? '#2E7D32' : i === p ? '#0B4F8A' : '#E2E7EE', color: i <= p ? '#15181C' : '#72787E' }));
+    const pend = s.pend || 0;
+    return {
+      clock: s.clock, sig: pend ? 'signal_cellular_connected_no_internet_0_bar' : 'signal_cellular_alt',
+      isLogin: k === 'login', isApp: k !== 'login', isOpen: p < 3, isFin: p === 3, isHora: !!s.hora2, isConfirm: !!s.confirm, toast: s.toast || false,
+      syncBg: pend ? '#FFDCC2' : '#E2E7EE', syncColor: pend ? '#2E1500' : '#15181C', syncIcon: pend ? 'cloud_upload' : 'cloud_done',
+      syncText: pend ? `Guardado en el teléfono (${pend} por enviar). Se envía solo cuando haya señal.` : 'Todo enviado',
+      estL: s.est ? s.est[0] : '', estC: s.est ? s.est[1] : '', estBg: s.est ? s.est[1] + '24' : '',
+      datos, track, pasoT: P[0], pasoLbl: P[1], pasoIcon: P[2], pasoBg: P[3], horaTxt: s.hora || ''
+    };
+  }
+}
+</script>
+</body>
+</html>

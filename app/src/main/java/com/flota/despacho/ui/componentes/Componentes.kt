@@ -1,23 +1,17 @@
 package com.flota.despacho.ui.componentes
 
+import com.flota.despacho.R
+import androidx.annotation.DrawableRes
+import androidx.compose.ui.res.painterResource
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.filled.CalendarToday
-import androidx.compose.material.icons.filled.CloudDone
-import androidx.compose.material.icons.filled.CloudUpload
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.ErrorOutline
-import androidx.compose.material.icons.filled.Event
-import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
@@ -72,7 +66,7 @@ fun BotonGrande(
     texto: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    icono: ImageVector? = null,
+    @DrawableRes icono: Int? = null,
     enabled: Boolean = true,
     secundario: Boolean = false
 ) {
@@ -91,7 +85,7 @@ fun BotonGrande(
         colors = colores
     ) {
         if (icono != null) {
-            Icon(icono, contentDescription = null, modifier = Modifier.size(28.dp))
+            Icon(painterResource(icono), contentDescription = null, modifier = Modifier.size(28.dp))
             Spacer(Modifier.width(12.dp))
         }
         Text(texto, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
@@ -123,13 +117,29 @@ fun AvisoSync(pendientes: Int, modifier: Modifier = Modifier) {
         modifier = modifier.fillMaxWidth()
     ) {
         Row(Modifier.padding(horizontal = 14.dp, vertical = 10.dp), verticalAlignment = Alignment.CenterVertically) {
-            Icon(if (enviado) Icons.Filled.CloudDone else Icons.Filled.CloudUpload, contentDescription = null)
+            Icon(painterResource(if (enviado) R.drawable.ic_cloud_done_fill else R.drawable.ic_cloud_upload_fill), contentDescription = null)
             Spacer(Modifier.width(10.dp))
             Text(
                 if (enviado) "Todo enviado"
                 else "Guardado en el teléfono ($pendientes por enviar). Se envía solo cuando haya señal.",
                 style = MaterialTheme.typography.bodyMedium
             )
+        }
+    }
+}
+
+/** Aviso informativo (no es error): fondo surfaceVariant con ícono info. */
+@Composable
+fun AvisoInfo(texto: String) {
+    Surface(
+        color = MaterialTheme.colorScheme.surfaceVariant,
+        shape = RoundedCornerShape(12.dp),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row(Modifier.padding(horizontal = 14.dp, vertical = 12.dp), verticalAlignment = Alignment.CenterVertically) {
+            Icon(painterResource(R.drawable.ic_info), contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
+            Spacer(Modifier.width(10.dp))
+            Text(texto, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
 }
@@ -142,7 +152,7 @@ fun MensajeError(texto: String) {
         modifier = Modifier.fillMaxWidth()
     ) {
         Row(Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
-            Icon(Icons.Filled.ErrorOutline, contentDescription = null, tint = MaterialTheme.colorScheme.onErrorContainer)
+            Icon(painterResource(R.drawable.ic_error_fill), contentDescription = null, tint = MaterialTheme.colorScheme.onErrorContainer)
             Spacer(Modifier.width(10.dp))
             Text(texto, color = MaterialTheme.colorScheme.onErrorContainer, style = MaterialTheme.typography.bodyLarge)
         }
@@ -150,10 +160,10 @@ fun MensajeError(texto: String) {
 }
 
 @Composable
-fun Dato(icono: ImageVector, etiqueta: String, valor: String, destacado: Boolean = false) {
+fun Dato(@DrawableRes icono: Int, etiqueta: String, valor: String, destacado: Boolean = false) {
     Row(verticalAlignment = Alignment.Top) {
         Icon(
-            icono, contentDescription = null,
+            painterResource(icono), contentDescription = null,
             tint = MaterialTheme.colorScheme.primary,
             modifier = Modifier.padding(top = 2.dp).size(24.dp)
         )
@@ -175,13 +185,13 @@ fun Secundario(texto: String) {
 }
 
 @Composable
-fun EstadoVacio(icono: ImageVector, titulo: String, texto: String) {
+fun EstadoVacio(@DrawableRes icono: Int, titulo: String, texto: String) {
     Column(
         Modifier.fillMaxWidth().padding(vertical = 48.dp, horizontal = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        Icon(icono, contentDescription = null, modifier = Modifier.size(64.dp), tint = MaterialTheme.colorScheme.primary)
+        Icon(painterResource(icono), contentDescription = null, modifier = Modifier.size(64.dp), tint = MaterialTheme.colorScheme.primary)
         Text(titulo, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
         Text(texto, style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.Center)
     }
@@ -204,7 +214,7 @@ fun CampoHora(etiqueta: String, elegida: Long?, onElegir: (Long?) -> Unit) {
     ) {
         Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
             Icon(
-                Icons.Filled.Schedule, contentDescription = null,
+                painterResource(R.drawable.ic_schedule), contentDescription = null,
                 tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(30.dp)
             )
             Spacer(Modifier.width(14.dp))
@@ -217,7 +227,7 @@ fun CampoHora(etiqueta: String, elegida: Long?, onElegir: (Long?) -> Unit) {
                 )
                 Secundario("Toca para cambiar la hora")
             }
-            Icon(Icons.Filled.Edit, contentDescription = "Cambiar hora")
+            Icon(painterResource(R.drawable.ic_edit), contentDescription = "Cambiar hora")
         }
     }
 
@@ -273,7 +283,7 @@ fun CampoFechaHora(etiqueta: String, valor: Long?, onCambio: (Long?) -> Unit) {
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
     ) {
         Row(Modifier.padding(horizontal = 16.dp, vertical = 12.dp), verticalAlignment = Alignment.CenterVertically) {
-            Icon(Icons.Filled.Event, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+            Icon(painterResource(R.drawable.ic_event), contentDescription = null, tint = MaterialTheme.colorScheme.primary)
             Spacer(Modifier.width(14.dp))
             Column(Modifier.weight(1f)) {
                 Text(etiqueta, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -320,7 +330,7 @@ fun CampoFechaHora(etiqueta: String, valor: Long?, onCambio: (Long?) -> Unit) {
 fun CampoFecha(etiqueta: String, valor: Long, onCambio: (Long) -> Unit) {
     var abierto by remember { mutableStateOf(false) }
     OutlinedButton(onClick = { abierto = true }, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp)) {
-        Icon(Icons.Filled.CalendarToday, contentDescription = null)
+        Icon(painterResource(R.drawable.ic_calendar_today), contentDescription = null)
         Spacer(Modifier.width(10.dp))
         Text("$etiqueta: ${fecha(valor)}")
     }

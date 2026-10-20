@@ -1,14 +1,12 @@
 package com.flota.despacho.ui.oficina
 
+import com.flota.despacho.R
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.EditCalendar
-import androidx.compose.material.icons.filled.Inbox
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -96,7 +94,7 @@ fun ModuloViajes(vm: OficinaViewModel, snackbar: SnackbarHostState, onVolver: ()
                 }
             }
             if (visibles.isEmpty()) {
-                EstadoVacio(Icons.Filled.Inbox, "No hay viajes aquí", "Toca \"Agregar viaje\" para cargar uno.")
+                EstadoVacio(R.drawable.ic_inbox, "No hay viajes aquí", "Toca \"Agregar viaje\" para cargar uno.")
             } else {
                 LazyColumn(contentPadding = FinDeLista, verticalArrangement = Arrangement.spacedBy(12.dp)) {
                     items(visibles, key = { it.id }) { v -> TarjetaViaje(v, ahora) { edicion = Edicion(v) } }
@@ -166,7 +164,7 @@ private fun FormularioViaje(vm: OficinaViewModel, actual: ViajeDetalle?, onListo
         val s = salida
         val l = llegada
         Dato(
-            Icons.Filled.EditCalendar, "Duración",
+            R.drawable.ic_edit_calendar, "Duración",
             if (s != null && l != null && l >= s) duracion(l - s) else "Se calcula con la salida y la llegada"
         )
     }
@@ -202,7 +200,7 @@ fun ModuloProgramacion(vm: OficinaViewModel, snackbar: SnackbarHostState, onVolv
                 )
             }
             if (enCurso.isEmpty()) {
-                item { EstadoVacio(Icons.Filled.EditCalendar, "No hay viajes en curso", "Toca \"Programar\" para asignarle unidad y carga a un viaje.") }
+                item { EstadoVacio(R.drawable.ic_edit_calendar, "No hay viajes en curso", "Toca \"Programar\" para asignarle unidad y carga a un viaje.") }
             }
             items(enCurso, key = { it.id }) { TarjetaViaje(it, ahora) }
         }
@@ -226,11 +224,16 @@ private fun FormularioProgramacion(vm: OficinaViewModel, onListo: () -> Unit) {
     val unidad = unidades.find { it.id == idUnidad }
     val carga = combustibles.find { it.id == idCarga }
 
-    Formulario(error, "Programar viaje", viaje != null && unidad != null && carga != null, onGuardar = {
-        if (viaje != null && unidad != null && carga != null) {
-            vm.programarViaje(viaje.id, unidad.id, carga.id, fechaProgramada) { err -> error = err; if (err == null) onListo() }
-        }
-    }) {
+    Formulario(
+        error, "Programar viaje", viaje != null && unidad != null && carga != null,
+        onGuardar = {
+            if (viaje != null && unidad != null && carga != null) {
+                vm.programarViaje(viaje.id, unidad.id, carga.id, fechaProgramada) { err -> error = err; if (err == null) onListo() }
+            }
+        },
+        icono = R.drawable.ic_edit_calendar_fill,
+        aviso = "Al programar, ${unidad?.nombreOperador ?: "el operador de la unidad"} verá el viaje en su teléfono."
+    ) {
         if (sinProgramar.isEmpty()) MensajeError("No hay viajes sin programar. Agrega uno en el módulo Viajes.")
         if (unidades.isEmpty()) MensajeError("No hay unidades. Conforma una en el módulo Unidades.")
 
@@ -258,7 +261,8 @@ private fun FormularioProgramacion(vm: OficinaViewModel, onListo: () -> Unit) {
             seleccion = carga,
             texto = { it.nombre },
             ayuda = if (unidad != null && carga != null && carga.id != unidad.idTipoCombustible)
-                "Ojo: el tanque de esta unidad es para ${unidad.combustible}." else null
+                "Ojo: el tanque de esta unidad es para ${unidad.combustible}."
+            else if (unidad != null) "La carga que lleva el tanque; se puede cambiar." else null
         ) { idCarga = it.id; error = null }
         CampoFecha("Fecha", fechaProgramada) { fechaProgramada = it }
     }

@@ -9,6 +9,7 @@ import androidx.compose.runtime.remember
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.flota.despacho.data.Rol
 import com.flota.despacho.ui.login.LoginScreen
 import com.flota.despacho.ui.oficina.OficinaScreen
 import com.flota.despacho.ui.operador.OperadorScreen
@@ -27,13 +28,15 @@ class MainActivity : ComponentActivity() {
 private fun AppNav(app: FlotaApp) {
     val nav = rememberNavController()
     val inicio = remember {
-        when {
-            app.sesion.idOperador != null -> "operador"
-            app.sesion.esOficina -> "oficina"
-            else -> "login"
+        when (app.sesion.rol) {
+            Rol.OPERADOR -> if (app.sesion.idOperador != null) "operador" else "login"
+            // Si Firebase ya no tiene la sesión (se borraron los datos, se venció), vuelve a pedir la clave
+            Rol.ADMINISTRADOR -> if (app.repo.administradorConectado) "oficina" else "login"
+            null -> "login"
         }
     }
     val cerrarSesion: () -> Unit = {
+        if (app.sesion.rol == Rol.ADMINISTRADOR) app.repo.cerrarSesionAdministrador()
         app.sesion.cerrar()
         nav.navigate("login") { popUpTo(nav.graph.id) { inclusive = true } }
     }
@@ -43,11 +46,11 @@ private fun AppNav(app: FlotaApp) {
             LoginScreen(
                 app = app,
                 onOperador = { id ->
-                    app.sesion.idOperador = id
+                    app.sesion.entrarOperador(id)
                     nav.navigate("operador") { popUpTo("login") { inclusive = true } }
                 },
-                onOficina = {
-                    app.sesion.esOficina = true
+                onAdministrador = { mantener ->
+                    app.sesion.entrarAdministrador(mantener)
                     nav.navigate("oficina") { popUpTo("login") { inclusive = true } }
                 }
             )

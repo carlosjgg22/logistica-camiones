@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400..600,0..1,0" rel="stylesheet">
+<style>body{margin:0;background:#eceef2;font-family:'IBM Plex Sans',system-ui,sans-serif;color:#15181C}a{color:#0B4F8A}a:hover{color:#15181C}.dv-turn{padding:40px 44px 32px;border-bottom:1px solid rgba(0,0,0,.08);scroll-margin-top:16px}.dv-thd{display:flex;align-items:baseline;gap:10px;margin:0 0 8px}.dv-tid{font:600 10px ui-monospace,Menlo,monospace;padding:3px 7px;background:#1a1a1a;color:#fff;border-radius:4px;text-decoration:none}.dv-tname{font:600 13px/1.2 'IBM Plex Sans',sans-serif;color:#1a1a1a}.dv-opts{display:flex;flex-wrap:wrap;gap:28px;align-items:flex-start}.dv-opt{flex:none;display:flex;flex-direction:column;gap:9px;scroll-margin-top:16px}.dv-oid{font:600 10.5px ui-monospace,Menlo,monospace;padding:3px 7px;background:rgba(0,0,0,.08);color:#1a1a1a;border-radius:5px;text-decoration:none}.dv-olabel{display:flex;align-items:baseline;gap:8px;font:400 11px/1.3 'IBM Plex Sans',sans-serif;color:rgba(0,0,0,.55)}.dv-card{max-width:100%;background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.06);overflow:hidden}.dv-opt:target .dv-oid{background:#2a78d6;color:#fff}.dv-next{margin:22px 0 0;font:12px/1.5 'IBM Plex Sans',sans-serif;color:rgba(0,0,0,.5)}.material-symbols-rounded{font-variation-settings:'FILL' 0,'wght' 500;user-select:none}</style>
+</helmet>
+<section class="dv-turn" id="t4">
+<div class="dv-thd"><a class="dv-tid" href="#t4">4</a><span class="dv-tname">App Android · entrando como administrador</span></div>
+<p style="margin:0 0 24px;max-width:900px;font-size:13px;line-height:1.55;color:#424850;text-wrap:pretty">El rol Oficina de tu app, con el mismo usuario admin del panel de PC (<a class="dv-oid" href="#2b">2b</a>) en lugar del PIN fijo. Los módulos y textos siguen OficinaScreen.kt, ModuloViajes.kt y ModuloOperadores.kt.</p>
+<div class="dv-opts">
+<div class="dv-opt" id="4a"><div class="dv-olabel"><a class="dv-oid" href="#4a">4a</a>Entrar como administrador</div><dc-import name="Oficina Pantalla" pantalla="login" hint-size="372px,780px"></dc-import></div>
+<div class="dv-opt" id="4b"><div class="dv-olabel"><a class="dv-oid" href="#4b">4b</a>Menú de módulos</div><dc-import name="Oficina Pantalla" pantalla="menu" hint-size="372px,780px"></dc-import></div>
+<div class="dv-opt" id="4c"><div class="dv-olabel"><a class="dv-oid" href="#4c">4c</a>Programación · viajes en curso</div><dc-import name="Oficina Pantalla" pantalla="programacion" hint-size="372px,780px"></dc-import></div>
+<div class="dv-opt" id="4d"><div class="dv-olabel"><a class="dv-oid" href="#4d">4d</a>Programar viaje</div><dc-import name="Oficina Pantalla" pantalla="programar" hint-size="372px,780px"></dc-import></div>
+<div class="dv-opt" id="4e"><div class="dv-olabel"><a class="dv-oid" href="#4e">4e</a>Viajes</div><dc-import name="Oficina Pantalla" pantalla="viajes" hint-size="372px,780px"></dc-import></div>
+<div class="dv-opt" id="4f"><div class="dv-olabel"><a class="dv-oid" href="#4f">4f</a>Operadores</div><dc-import name="Oficina Pantalla" pantalla="operadores" hint-size="372px,780px"></dc-import></div>
+<div class="dv-opt" id="4g"><div class="dv-olabel"><a class="dv-oid" href="#4g">4g</a>Unidades</div><dc-import name="Oficina Pantalla" pantalla="unidades" hint-size="372px,780px"></dc-import></div>
+</div>
+<p class="dv-next">Prueba: “formulario de alta de operador” · “agrega el formulario Programar al panel de PC <a class="dv-oid" href="#2b">2b</a>” · “pantallas de Rutas, Tanques y Vehículos”</p>
+</section>
+<section class="dv-turn" id="t3">
+<div class="dv-thd"><a class="dv-tid" href="#t3">3</a><span class="dv-tname">Operador · pantallas paso a paso (app Android)</span></div>
+<p style="margin:0 0 24px;max-width:900px;font-size:13px;line-height:1.55;color:#424850;text-wrap:pretty">Las mismas pantallas de <a class="dv-oid" href="#2a">2a</a> separadas para revisar o entregar al equipo. El ejemplo es Juan con el despacho 1042: sale a las 06:42 (hora corregida), llega a las 08:15 y entrega a las 08:40. En 3e la salida se hizo sin señal y queda pendiente de enviar.</p>
+<div class="dv-opts">
+<div class="dv-opt" id="3a"><div class="dv-olabel"><a class="dv-oid" href="#3a">3a</a>Entrar con cédula</div><dc-import name="Operador Pantalla" pantalla="login" hint-size="372px,780px"></dc-import></div>
+<div class="dv-opt" id="3b"><div class="dv-olabel"><a class="dv-oid" href="#3b">3b</a>Viaje programado · registrar salida</div><dc-import name="Operador Pantalla" pantalla="salida" hint-size="372px,780px"></dc-import></div>
+<div class="dv-opt" id="3c"><div class="dv-olabel"><a class="dv-oid" href="#3c">3c</a>Corregir la hora</div><dc-import name="Operador Pantalla" pantalla="hora" hint-size="372px,780px"></dc-import></div>
+<div class="dv-opt" id="3d"><div class="dv-olabel"><a class="dv-oid" href="#3d">3d</a>Confirmar salida</div><dc-import name="Operador Pantalla" pantalla="confirmar" hint-size="372px,780px"></dc-import></div>
+<div class="dv-opt" id="3e"><div class="dv-olabel"><a class="dv-oid" href="#3e">3e</a>En ruta · registrar llegada</div><dc-import name="Operador Pantalla" pantalla="llegada" hint-size="372px,780px"></dc-import></div>
+<div class="dv-opt" id="3f"><div class="dv-olabel"><a class="dv-oid" href="#3f">3f</a>Llegó · registrar entrega</div><dc-import name="Operador Pantalla" pantalla="entrega" hint-size="372px,780px"></dc-import></div>
+<div class="dv-opt" id="3g"><div class="dv-olabel"><a class="dv-oid" href="#3g">3g</a>Viaje terminado</div><dc-import name="Operador Pantalla" pantalla="fin" hint-size="372px,780px"></dc-import></div>
+</div>
+<p class="dv-next">Prueba: “agrega la pantalla de historial de viajes del operador” · “muestra el error de hora futura en <a class="dv-oid" href="#3d">3d</a>” · “versión en modo oscuro para cabina”</p>
+</section>
+<section class="dv-turn" id="t2">
+<div class="dv-thd"><a class="dv-tid" href="#t2">2</a><span class="dv-tname">Ajustado a tu código (FlotaDespacho · rama rediseno-menu-iconos)</span></div>
+<p style="margin:0 0 24px;max-width:900px;font-size:13px;line-height:1.55;color:#424850;text-wrap:pretty">Flujo real del operador: entra con cédula → ve su viaje programado → registra <b>salida</b>, <b>llegada</b> y <b>entrega del producto</b>. La hora viene en “ahora” y se corrige con un reloj; se validan horas futuras y llegada anterior a la salida (mismos mensajes que FlotaRepository). Los litros salen del tanque de la unidad, el operador no los escribe. Estados: Sin programar · Programado · En ruta · Completado. Colores de Tema.kt. El viaje de Juan en <a class="dv-oid" href="#2a">2a</a> se refleja en vivo en <a class="dv-oid" href="#2b">2b</a> y <a class="dv-oid" href="#2c">2c</a>. “Sin señal” en Tweaks muestra los registros pendientes de enviar.</p>
+<div class="dv-opts">
+
+<div class="dv-opt" id="2a"><div class="dv-olabel"><a class="dv-oid" href="#2a">2a</a>Operador · cédula 12345678</div>
+<div style="width:372px;height:780px;border-radius:44px;background:#101318;padding:10px;box-sizing:border-box">
+<div style="position:relative;height:100%;border-radius:34px;background:#F4F6F9;overflow:hidden;display:flex;flex-direction:column">
+<div style="height:36px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 22px;font-size:13px;font-weight:600"><span>{{ clock }}</span><div style="display:flex;gap:4px;align-items:center"><span class="material-symbols-rounded" style="font-variation-settings:'FILL' 1,'wght' 500;font-size:16px">{{ sigIcon }}</span><span class="material-symbols-rounded" style="font-variation-settings:'FILL' 1,'wght' 500;font-size:16px">battery_5_bar</span></div></div>
+
+<sc-if value="{{ notLogged }}" hint-placeholder-val="{{ true }}">
+<div style="flex:1;display:flex;flex-direction:column;padding:40px 22px 28px;gap:16px">
+<div style="width:72px;height:72px;border-radius:50%;background:#D3E4FF;color:#001C38;display:flex;align-items:center;justify-content:center"><span class="material-symbols-rounded" style="font-variation-settings:'FILL' 1,'wght' 500;font-size:38px">local_shipping</span></div>
+<div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:14px;font-weight:600;color:#0B4F8A">LogisticaGarcía · Despachos</span><span style="font-size:28px;font-weight:700;line-height:1.15">Entra con tu cédula</span></div>
+<div style="display:flex;flex-direction:column;gap:6px;margin-top:8px"><label style="font-size:13px;font-weight:500;color:#424850">Cédula</label><input inputmode="numeric" placeholder="Ej. 12345678" value="{{ ced }}" onChange="{{ setCed }}" style="height:60px;border:1.5px solid {{ cedBorder }};border-radius:12px;padding:0 16px;font:600 22px 'IBM Plex Mono',monospace;color:#15181C;background:#fff;outline:none;box-sizing:border-box"></div>
+<sc-if value="{{ loginErr }}" hint-placeholder-val="{{ false }}"><div style="display:flex;gap:10px;align-items:center;padding:12px 14px;border-radius:12px;background:#FFDAD6;color:#410002;font-size:15px"><span class="material-symbols-rounded" style="font-variation-settings:'FILL' 1,'wght' 500;">error</span>{{ loginErr }}</div></sc-if>
+<button onClick="{{ login }}" style="height:68px;border:none;border-radius:18px;background:#0B4F8A;color:#fff;font:700 18px 'IBM Plex Sans',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:12px"><span class="material-symbols-rounded" style="font-variation-settings:'FILL' 1,'wght' 500;font-size:26px">login</span>Entrar</button>
+<button onClick="{{ fillDemo }}" style="border:none;background:none;color:#0B4F8A;font:600 14px 'IBM Plex Sans',sans-serif;cursor:pointer;padding:6px">Usar cédula de prueba (Juan)</button>
+<div style="flex:1"></div>
+<div style="display:flex;align-items:center;justify-content:center;gap:8px;font-size:14px;color:#424850"><span class="material-symbols-rounded" style="font-size:20px">apartment</span>¿Eres de la oficina? Entra con PIN</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ logged }}" hint-placeholder-val="{{ false }}">
+<div style="height:60px;flex:none;display:flex;align-items:center;padding:0 8px 0 20px;gap:8px"><span style="flex:1;font-size:22px;font-weight:600">Hola, Juan</span><button onClick="{{ logout }}" title="Cerrar sesión" style="width:48px;height:48px;border:none;background:none;border-radius:50%;cursor:pointer;color:#424850;display:flex;align-items:center;justify-content:center"><span class="material-symbols-rounded">logout</span></button></div>
+<div style="flex:1;min-height:0;overflow:auto;padding:4px 16px 20px;display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;gap:10px;align-items:center;padding:10px 14px;border-radius:12px;background:{{ syncBg }};color:{{ syncColor }};font-size:14.5px;line-height:1.35"><span class="material-symbols-rounded" style="font-variation-settings:'FILL' 1,'wght' 500;">{{ syncIcon }}</span><span>{{ syncText }}</span></div>
+
+<sc-if value="{{ open }}" hint-placeholder-val="{{ true }}">
+<div style="background:#fff;border-radius:16px;box-shadow:0 1px 3px rgba(21,24,28,.12),0 1px 2px rgba(21,24,28,.06);padding:20px;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:center;gap:8px"><span style="flex:1;font-size:18px;font-weight:700">Despacho 1042</span><span style="font-size:14px;font-weight:600;padding:4px 12px;border-radius:99px;color:{{ jv.c }};background:{{ jv.bg }}">{{ jv.label }}</span></div>
+<sc-for list="{{ datos }}" as="d" hint-placeholder-count="4"><div style="display:flex;gap:14px;align-items:flex-start"><span class="material-symbols-rounded" style="color:#0B4F8A;margin-top:2px">{{ d.icon }}</span><div style="display:flex;flex-direction:column;gap:1px;min-width:0"><span style="font-size:12px;font-weight:500;color:#424850">{{ d.label }}</span><span style="font-size:{{ d.size }};font-weight:{{ d.weight }};line-height:1.3">{{ d.value }}</span></div></div></sc-for>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding-top:14px;border-top:1px solid #E2E7EE">
+<sc-for list="{{ track }}" as="t" hint-placeholder-count="3"><div style="display:flex;flex-direction:column;gap:6px"><div style="height:4px;border-radius:2px;background:{{ t.bar }}"></div><span style="font-size:12px;font-weight:600;color:{{ t.color }}">{{ t.label }}</span><span style="font:600 13px 'IBM Plex Mono',monospace;color:{{ t.color }}">{{ t.h }}</span></div></sc-for>
+</div>
+</div>
+<span style="font-size:22px;font-weight:700;margin-top:4px">{{ paso.t }}</span>
+<button onClick="{{ openPicker }}" style="display:flex;align-items:center;gap:14px;padding:16px;border:1px solid #72787E;border-radius:12px;background:#fff;cursor:pointer;text-align:left;font-family:'IBM Plex Sans',sans-serif;color:#15181C"><span class="material-symbols-rounded" style="font-size:30px;color:#0B4F8A">schedule</span><span style="flex:1;display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;font-weight:500;color:#424850">{{ paso.lbl }}</span><span style="font-size:24px;font-weight:700">{{ horaTxt }}</span><span style="font-size:14px;color:#424850">Toca para cambiar la hora</span></span><span class="material-symbols-rounded" style="color:#424850">edit</span></button>
+<sc-if value="{{ err }}" hint-placeholder-val="{{ false }}"><div style="display:flex;gap:10px;align-items:center;padding:14px;border-radius:12px;background:#FFDAD6;color:#410002;font-size:15.5px;line-height:1.35"><span class="material-symbols-rounded" style="font-variation-settings:'FILL' 1,'wght' 500;">error</span>{{ err }}</div></sc-if>
+<button onClick="{{ ask }}" style="min-height:68px;border:none;border-radius:18px;background:{{ paso.bg }};color:#fff;font:700 18px 'IBM Plex Sans',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:12px;padding:0 16px" style-active="transform:scale(.98)"><span class="material-symbols-rounded" style="font-variation-settings:'FILL' 1,'wght' 500;font-size:28px">{{ paso.icon }}</span>{{ paso.t }}</button>
+</sc-if>
+
+<sc-if value="{{ done }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px;padding:40px 12px">
+<span class="material-symbols-rounded" style="font-variation-settings:'FILL' 1,'wght' 500;font-size:64px;color:#2E7D32">task_alt</span>
+<span style="font-size:22px;font-weight:700">Viaje terminado</span>
+<span style="font-size:17px;color:#424850;line-height:1.45">Despacho 1042 a Estación Norte 14.<br>Duración {{ jv.dur }} · entrega a las {{ jv.ent }}</span>
+<span style="font-size:15px;color:#424850;margin-top:8px">Cuando la oficina te programe otro viaje aparecerá aquí.</span>
+<button onClick="{{ reset }}" style="margin-top:8px;height:48px;padding:0 20px;border:1px solid #72787E;border-radius:99px;background:#fff;color:#0B4F8A;font:600 15px 'IBM Plex Sans',sans-serif;cursor:pointer">Reiniciar demo</button>
+</div>
+</sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ picker }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;background:rgba(16,19,24,.45);display:flex;align-items:flex-end">
+<div style="width:100%;background:#fff;border-radius:28px 28px 0 0;padding:22px 20px 26px;display:flex;flex-direction:column;gap:18px;box-sizing:border-box">
+<span style="font-size:20px;font-weight:600">{{ paso.lbl }}</span>
+<div style="display:flex;align-items:center;justify-content:center;gap:12px">
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><button onClick="{{ hUp }}" style="width:56px;height:44px;border:none;border-radius:12px;background:#EDF0F4;cursor:pointer;color:#15181C"><span class="material-symbols-rounded">expand_less</span></button><span style="width:96px;height:80px;border-radius:12px;background:#D3E4FF;color:#001C38;display:flex;align-items:center;justify-content:center;font:600 46px 'IBM Plex Mono',monospace">{{ pHs }}</span><button onClick="{{ hDn }}" style="width:56px;height:44px;border:none;border-radius:12px;background:#EDF0F4;cursor:pointer;color:#15181C"><span class="material-symbols-rounded">expand_more</span></button></div>
+<span style="font:600 46px 'IBM Plex Mono',monospace">:</span>
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><button onClick="{{ mUp }}" style="width:56px;height:44px;border:none;border-radius:12px;background:#EDF0F4;cursor:pointer;color:#15181C"><span class="material-symbols-rounded">expand_less</span></button><span style="width:96px;height:80px;border-radius:12px;background:#EDF0F4;display:flex;align-items:center;justify-content:center;font:600 46px 'IBM Plex Mono',monospace">{{ pMs }}</span><button onClick="{{ mDn }}" style="width:56px;height:44px;border:none;border-radius:12px;background:#EDF0F4;cursor:pointer;color:#15181C"><span class="material-symbols-rounded">expand_more</span></button></div>
+</div>
+<div style="display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap">
+<button onClick="{{ useNow }}" style="height:44px;padding:0 14px;border:none;background:none;color:#0B4F8A;font:600 15px 'IBM Plex Sans',sans-serif;cursor:pointer;margin-right:auto">Usar hora actual</button>
+<button onClick="{{ closePicker }}" style="height:44px;padding:0 14px;border:none;background:none;color:#0B4F8A;font:600 15px 'IBM Plex Sans',sans-serif;cursor:pointer">Cancelar</button>
+<button onClick="{{ acceptPicker }}" style="height:44px;padding:0 20px;border:none;border-radius:99px;background:#0B4F8A;color:#fff;font:600 15px 'IBM Plex Sans',sans-serif;cursor:pointer">Aceptar</button>
+</div>
+</div></div>
+</sc-if>
+
+<sc-if value="{{ confirm }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;background:rgba(16,19,24,.45);display:flex;align-items:center;justify-content:center;padding:24px">
+<div style="width:100%;background:#fff;border-radius:28px;padding:24px;display:flex;flex-direction:column;gap:14px;box-sizing:border-box">
+<span style="font-size:22px;font-weight:600;line-height:1.25">¿{{ paso.t }}?</span>
+<span style="font-size:17px;color:#424850">{{ paso.lbl }}: {{ confirmHora }}.</span>
+<div style="display:flex;gap:8px;justify-content:flex-end;margin-top:6px"><button onClick="{{ cancelConfirm }}" style="height:44px;padding:0 14px;border:none;background:none;color:#0B4F8A;font:600 15px 'IBM Plex Sans',sans-serif;cursor:pointer">Cancelar</button><button onClick="{{ doConfirm }}" style="height:44px;padding:0 18px;border:none;border-radius:99px;background:#0B4F8A;color:#fff;font:600 15px 'IBM Plex Sans',sans-serif;cursor:pointer">{{ paso.t }}</button></div>
+</div></div>
+</sc-if>
+
+<sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;left:14px;right:14px;bottom:18px;padding:14px 16px;border-radius:8px;background:#2B3038;color:#fff;font-size:15px;box-shadow:0 4px 14px rgba(0,0,0,.25)">{{ toast }}</div></sc-if>
+</div></div>
+</div>
+
+<div class="dv-opt" id="2b"><div class="dv-olabel"><a class="dv-oid" href="#2b">2b</a>Oficina · PC (navegador o app instalada), 7 módulos</div>
+<div class="dv-card" style="width:1240px;min-height:780px;background:#F4F6F9">
+<sc-if value="{{ adminOut }}" hint-placeholder-val="{{ true }}">
+<div style="min-height:780px;display:grid;grid-template-columns:minmax(0,1fr) 520px">
+<div style="background:#0B4F8A;color:#fff;padding:48px;display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;align-items:center;gap:12px"><span style="width:48px;height:48px;border-radius:50%;background:#D3E4FF;color:#001C38;display:flex;align-items:center;justify-content:center"><span class="material-symbols-rounded" style="font-variation-settings:'FILL' 1,'wght' 500;font-size:28px">local_shipping</span></span><span style="font-size:18px;font-weight:700">LogisticaGarcía</span></div>
+<div style="flex:1"></div>
+<span style="font-size:40px;font-weight:700;line-height:1.1;max-width:460px;text-wrap:pretty">Oficina de despachos</span>
+<span style="font-size:17px;line-height:1.5;opacity:.85;max-width:440px">Programa viajes, arma unidades y sigue en vivo la salida, llegada y entrega de cada operador.</span>
+<div style="display:flex;gap:10px;align-items:center;font-size:14px;opacity:.85;margin-top:12px"><span class="material-symbols-rounded" style="font-size:20px">sync</span>Mismos datos que la app de Android</div>
+</div>
+<div style="background:#fff;padding:56px 56px 40px;display:flex;flex-direction:column;gap:18px;justify-content:center">
+<div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:26px;font-weight:700">Iniciar sesión</span><span style="font-size:15px;color:#424850">Acceso para administradores de la oficina.</span></div>
+<div style="display:flex;flex-direction:column;gap:6px"><label style="font-size:13px;font-weight:500;color:#424850">Correo</label><input type="email" placeholder="admin@logisticagarcia.com" value="{{ aMail }}" onChange="{{ setAMail }}" style="height:52px;border:1.5px solid {{ aBorder }};border-radius:12px;padding:0 14px;font:16px 'IBM Plex Sans',sans-serif;color:#15181C;outline:none;box-sizing:border-box"></div>
+<div style="display:flex;flex-direction:column;gap:6px"><label style="font-size:13px;font-weight:500;color:#424850">Contraseña</label><div style="display:flex;align-items:center;height:52px;border:1.5px solid {{ aBorder }};border-radius:12px;padding:0 6px 0 14px;box-sizing:border-box"><input type="{{ aPassType }}" placeholder="••••••••" value="{{ aPass }}" onChange="{{ setAPass }}" onKeyDown="{{ aKey }}" style="flex:1;min-width:0;border:none;outline:none;font:16px 'IBM Plex Sans',sans-serif;color:#15181C"><button onClick="{{ toggleShow }}" title="Mostrar contraseña" style="width:40px;height:40px;border:none;background:none;border-radius:50%;cursor:pointer;color:#424850;display:flex;align-items:center;justify-content:center"><span class="material-symbols-rounded">{{ aEye }}</span></button></div></div>
+<sc-if value="{{ aErr }}" hint-placeholder-val="{{ false }}"><div style="display:flex;gap:10px;align-items:center;padding:12px 14px;border-radius:12px;background:#FFDAD6;color:#410002;font-size:15px"><span class="material-symbols-rounded" style="font-variation-settings:'FILL' 1,'wght' 500;">error</span>{{ aErr }}</div></sc-if>
+<div style="display:flex;align-items:center;justify-content:space-between;font-size:14px"><button onClick="{{ toggleKeep }}" style="display:flex;gap:8px;align-items:center;border:none;background:none;padding:0;cursor:pointer;font:14px 'IBM Plex Sans',sans-serif;color:#15181C"><span class="material-symbols-rounded" style="color:#0B4F8A">{{ aKeepIcon }}</span>Mantener la sesión iniciada</button><span style="color:#0B4F8A;font-weight:600">¿Olvidaste tu contraseña?</span></div>
+<button onClick="{{ adminLogin }}" style="height:56px;border:none;border-radius:16px;background:#0B4F8A;color:#fff;font:700 16px 'IBM Plex Sans',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px"><span class="material-symbols-rounded" style="font-variation-settings:'FILL' 1,'wght' 500;">login</span>Entrar</button>
+<button onClick="{{ adminDemo }}" style="border:none;background:none;color:#0B4F8A;font:600 14px 'IBM Plex Sans',sans-serif;cursor:pointer">Usar acceso de prueba</button>
+<span style="font-size:12.5px;color:#424850;text-align:center;margin-top:8px">Los operadores entran desde la app de Android con su cédula.</span>
+</div>
+</div>
+</sc-if>
+<sc-if value="{{ adminIn }}" hint-placeholder-val="{{ false }}">
+<div style="min-height:780px;display:grid;grid-template-columns:248px minmax(0,1fr)">
+<div style="background:#fff;border-right:1px solid #E2E7EE;display:flex;flex-direction:column">
+<div style="padding:20px 20px 16px;display:flex;flex-direction:column;gap:2px"><span style="font-size:16px;font-weight:700;color:#0B4F8A">LogisticaGarcía</span><span style="font-size:13px;color:#424850">Oficina</span></div>
+<div style="margin:0 12px 12px;padding:8px 12px;border-radius:10px;background:#E2E7EE;color:#424850;font-size:12.5px;display:flex;gap:8px;align-items:center"><span class="material-symbols-rounded" style="font-size:18px">sync</span>Datos actualizados a las {{ clock }}</div>
+<div style="display:flex;flex-direction:column;gap:2px;padding:0 10px">
+<sc-for list="{{ mods }}" as="m" hint-placeholder-count="7"><button onClick="{{ m.pick }}" style="display:flex;align-items:center;gap:12px;padding:10px 12px;border:none;border-radius:12px;background:{{ m.bg }};color:{{ m.color }};cursor:pointer;text-align:left;font-family:'IBM Plex Sans',sans-serif" style-hover="background:#EDF0F4"><span class="material-symbols-rounded" style="font-size:22px">{{ m.icon }}</span><span style="flex:1;display:flex;flex-direction:column"><span style="font-size:14.5px;font-weight:600">{{ m.t }}</span><span style="font-size:12px;color:#424850">{{ m.res }}</span></span></button></sc-for>
+</div>
+<div style="flex:1"></div>
+<div style="margin:12px;padding:12px;border-top:1px solid #E2E7EE;display:flex;align-items:center;gap:10px"><span style="width:36px;height:36px;border-radius:50%;background:#15181C;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex:none">AG</span><span style="flex:1;min-width:0;display:flex;flex-direction:column"><span style="font-size:14px;font-weight:600">Administrador</span><span style="font-size:12px;color:#424850;overflow:hidden;text-overflow:ellipsis">{{ aMailShown }}</span></span><button onClick="{{ adminLogout }}" title="Cerrar sesión" style="width:40px;height:40px;border:none;background:none;border-radius:50%;cursor:pointer;color:#424850;display:flex;align-items:center;justify-content:center"><span class="material-symbols-rounded">logout</span></button></div>
+</div>
+<div style="display:flex;flex-direction:column;min-width:0">
+<div style="height:68px;display:flex;align-items:center;gap:16px;padding:0 26px;background:#fff;border-bottom:1px solid #E2E7EE">
+<span class="material-symbols-rounded" style="color:#0B4F8A">{{ cur.icon }}</span><span style="font-size:22px;font-weight:700;flex:1">{{ cur.t }}</span>
+<sc-if value="{{ cur.add }}" hint-placeholder-val="{{ true }}"><button style="height:44px;padding:0 18px 0 14px;border:none;border-radius:14px;background:#D3E4FF;color:#001C38;font:600 14.5px 'IBM Plex Sans',sans-serif;display:flex;gap:8px;align-items:center;cursor:pointer"><span class="material-symbols-rounded" style="font-variation-settings:'FILL' 1,'wght' 500;font-size:20px">add</span>{{ cur.add }}</button></sc-if>
+</div>
+<div style="padding:22px 26px;display:flex;flex-direction:column;gap:16px">
+
+<sc-if value="{{ isProg }}" hint-placeholder-val="{{ true }}">
+<span style="font-size:20px;font-weight:700">Viajes en curso: {{ enRutaN }} en ruta, {{ porSalirN }} por salir</span>
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px">
+<sc-for list="{{ enCurso }}" as="v" hint-placeholder-count="3"><div style="background:#fff;border-radius:14px;border:1px solid {{ v.border }};padding:16px;display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;align-items:center;gap:8px"><span style="flex:1;font-size:16px;font-weight:700">Despacho {{ v.desp }}</span><span style="font-size:13px;font-weight:600;padding:3px 10px;border-radius:99px;color:{{ v.c }};background:{{ v.bg }}">{{ v.label }}</span></div>
+<span style="font-size:16px">Destino: {{ v.destino }}</span>
+<span style="font-size:14px;color:#424850">{{ v.unidadTxt }}</span>
+<span style="font-size:14px;color:#424850">{{ v.extra }}</span>
+<sc-if value="{{ v.live }}" hint-placeholder-val="{{ false }}"><span style="align-self:flex-start;font-size:11px;font-weight:700;letter-spacing:.04em;color:#0B4F8A;background:#D3E4FF;padding:3px 7px;border-radius:5px">EN VIVO DESDE 2A</span></sc-if>
+</div></sc-for>
+</div>
+<sc-if value="{{ noCurso }}" hint-placeholder-val="{{ false }}"><span style="font-size:15px;color:#424850">No hay viajes en curso. Toca “Programar” para asignarle unidad y carga a un viaje.</span></sc-if>
+</sc-if>
+
+<sc-if value="{{ isViajes }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;gap:8px;flex-wrap:wrap"><sc-for list="{{ vChips }}" as="f" hint-placeholder-count="5"><button onClick="{{ f.pick }}" style="height:34px;padding:0 14px;border:1px solid {{ f.border }};border-radius:8px;background:{{ f.bg }};color:{{ f.color }};font:500 14px 'IBM Plex Sans',sans-serif;cursor:pointer">{{ f.label }}</button></sc-for></div>
+<div style="background:#fff;border-radius:14px;border:1px solid #E2E7EE;overflow:hidden">
+<div style="display:grid;grid-template-columns:96px 1.4fr 1.5fr 90px 76px 76px 76px 100px 120px;gap:8px;padding:11px 16px;font-size:12px;font-weight:600;color:#424850;border-bottom:1px solid #E2E7EE"><span>Despacho</span><span>Destino</span><span>Unidad · operador</span><span>Carga</span><span>Salida</span><span>Llegada</span><span>Entrega</span><span>Duración</span><span>Estado</span></div>
+<sc-for list="{{ vRows }}" as="v" hint-placeholder-count="6"><div style="display:grid;grid-template-columns:96px 1.4fr 1.5fr 90px 76px 76px 76px 100px 120px;gap:8px;padding:12px 16px;font-size:14px;align-items:center;border-bottom:1px solid #EDF0F4;background:{{ v.rowBg }}" style-hover="background:#F4F6F9">
+<span style="font:600 14px 'IBM Plex Mono',monospace">{{ v.desp }}</span><span>{{ v.destino }}</span><span style="color:#424850">{{ v.unidadCorta }}</span><span>{{ v.carga }}</span>
+<span style="font-family:'IBM Plex Mono',monospace;color:#424850">{{ v.sal }}</span><span style="font-family:'IBM Plex Mono',monospace;color:#424850">{{ v.lle }}</span><span style="font-family:'IBM Plex Mono',monospace;color:#424850">{{ v.ent }}</span><span style="color:#424850">{{ v.dur }}</span>
+<span><span style="font-size:13px;font-weight:600;padding:3px 10px;border-radius:99px;color:{{ v.c }};background:{{ v.bg }}">{{ v.label }}</span></span>
+</div></sc-for>
+</div>
+</sc-if>
+
+<sc-if value="{{ isOps }}" hint-placeholder-val="{{ false }}">
+<span style="font-size:20px;font-weight:700">{{ dispN }} disponibles, {{ enViajeN }} en viaje</span>
+<div style="display:flex;gap:8px"><sc-for list="{{ oChips }}" as="f" hint-placeholder-count="3"><button onClick="{{ f.pick }}" style="height:34px;padding:0 14px;border:1px solid {{ f.border }};border-radius:8px;background:{{ f.bg }};color:{{ f.color }};font:500 14px 'IBM Plex Sans',sans-serif;cursor:pointer">{{ f.label }}</button></sc-for></div>
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px">
+<sc-for list="{{ oRows }}" as="o" hint-placeholder-count="3"><div style="background:#fff;border-radius:14px;border:1px solid #E2E7EE;padding:16px;display:flex;flex-direction:column;gap:6px">
+<div style="display:flex;align-items:center;gap:8px"><span style="flex:1;font-size:16px;font-weight:700">{{ o.nombre }}</span><span style="font-size:13px;font-weight:600;padding:3px 10px;border-radius:99px;color:{{ o.c }};background:{{ o.bg }}">{{ o.label }}</span></div>
+<span style="font-size:14px;color:#424850">Cédula {{ o.cedula }}</span><span style="font-size:14px;color:#424850">{{ o.unidad }}</span><span style="font-size:14px;color:#424850">{{ o.viaje }}</span>
+<span style="display:flex;gap:8px;align-items:center;color:#0B4F8A;font-size:14px;font-weight:600;margin-top:4px"><span class="material-symbols-rounded" style="font-variation-settings:'FILL' 1,'wght' 500;font-size:20px">call</span>Llamar al {{ o.tel }}</span>
+</div></sc-for>
+</div>
+</sc-if>
+
+<sc-if value="{{ isUni }}" hint-placeholder-val="{{ false }}">
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px">
+<sc-for list="{{ unidades }}" as="u" hint-placeholder-count="3"><div style="background:#fff;border-radius:14px;border:1px solid #E2E7EE;padding:16px;display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;align-items:center;gap:8px"><span style="flex:1;font:600 16px 'IBM Plex Mono',monospace">{{ u.veh }}</span><span style="font-size:13px;font-weight:600;padding:3px 10px;border-radius:99px;color:{{ u.c }};background:{{ u.bg }}">{{ u.label }}</span></div>
+<div style="display:grid;grid-template-columns:24px 1fr;gap:6px 10px;font-size:14px;align-items:center"><span class="material-symbols-rounded" style="font-size:20px;color:#0B4F8A">local_shipping</span><span>{{ u.desc }}</span><span class="material-symbols-rounded" style="font-size:20px;color:#0B4F8A">propane_tank</span><span>Tanque {{ u.tanque }} · {{ u.vol }} · {{ u.comp }} comp. · {{ u.comb }}</span><span class="material-symbols-rounded" style="font-size:20px;color:#0B4F8A">person</span><span>{{ u.op }}</span></div>
+</div></sc-for>
+</div>
+</sc-if>
+
+<sc-if value="{{ isTable }}" hint-placeholder-val="{{ false }}">
+<div style="background:#fff;border-radius:14px;border:1px solid #E2E7EE;overflow:hidden">
+<div style="display:grid;grid-template-columns:{{ tbl.cols }};gap:8px;padding:11px 16px;font-size:12px;font-weight:600;color:#424850;border-bottom:1px solid #E2E7EE"><sc-for list="{{ tbl.head }}" as="h" hint-placeholder-count="4"><span>{{ h }}</span></sc-for></div>
+<sc-for list="{{ tbl.rows }}" as="r" hint-placeholder-count="4"><div style="display:grid;grid-template-columns:{{ tbl.cols }};gap:8px;padding:12px 16px;font-size:14px;border-bottom:1px solid #EDF0F4" style-hover="background:#F4F6F9"><sc-for list="{{ r }}" as="cell" hint-placeholder-count="4"><span>{{ cell }}</span></sc-for></div></sc-for>
+</div>
+</sc-if>
+
+</div>
+</div>
+</div>
+</sc-if>
+</div>
+</div>
+
+<div class="dv-opt" id="2c"><div class="dv-olabel"><a class="dv-oid" href="#2c">2c</a>Oficina · móvil (PIN), menú de íconos</div>
+<div style="width:372px;height:780px;border-radius:44px;background:#101318;padding:10px;box-sizing:border-box">
+<div style="height:100%;border-radius:34px;background:#F4F6F9;overflow:hidden;display:flex;flex-direction:column">
+<div style="height:36px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 22px;font-size:13px;font-weight:600"><span>{{ clock }}</span><div style="display:flex;gap:4px;align-items:center"><span class="material-symbols-rounded" style="font-variation-settings:'FILL' 1,'wght' 500;font-size:16px">signal_cellular_alt</span><span class="material-symbols-rounded" style="font-variation-settings:'FILL' 1,'wght' 500;font-size:16px">battery_5_bar</span></div></div>
+<sc-if value="{{ m2Menu }}" hint-placeholder-val="{{ true }}">
+<div style="height:60px;flex:none;display:flex;align-items:center;padding:0 8px 0 20px"><span style="flex:1;font-size:22px;font-weight:600">Oficina</span><span class="material-symbols-rounded" style="width:48px;text-align:center;color:#424850">refresh</span><span class="material-symbols-rounded" style="width:48px;text-align:center;color:#424850">logout</span></div>
+<div style="padding:8px 16px;background:#E2E7EE;color:#424850;font-size:14px">Datos actualizados a las {{ clock }}</div>
+<div style="flex:1;overflow:auto;padding:16px;display:flex;flex-direction:column;gap:12px">
+<button onClick="{{ openProg }}" style="display:flex;gap:12px;align-items:center;padding:14px 16px;border:none;border-radius:16px;background:#0B4F8A;color:#fff;cursor:pointer;text-align:left;font-family:'IBM Plex Sans',sans-serif"><span class="material-symbols-rounded" style="font-variation-settings:'FILL' 1,'wght' 500;font-size:30px">local_shipping</span><span style="flex:1;display:flex;flex-direction:column;gap:2px"><span style="font-size:13px;opacity:.85">Ahora</span><span style="font-size:17px;font-weight:700">{{ enRutaN }} en ruta · {{ porSalirN }} por salir</span></span><span class="material-symbols-rounded">chevron_right</span></button>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+<sc-for list="{{ mods2 }}" as="m" hint-placeholder-count="7"><button onClick="{{ m.pick }}" style="min-height:140px;border:none;border-radius:16px;background:#fff;box-shadow:0 1px 3px rgba(21,24,28,.12);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;font-family:'IBM Plex Sans',sans-serif;color:#15181C;padding:14px"><span style="width:60px;height:60px;border-radius:50%;background:#D3E4FF;color:#001C38;display:flex;align-items:center;justify-content:center"><span class="material-symbols-rounded" style="font-variation-settings:'FILL' 1,'wght' 500;font-size:32px">{{ m.icon }}</span></span><span style="font-size:16px;font-weight:700">{{ m.t }}</span><span style="font-size:13.5px;color:#424850">{{ m.res }}</span></button></sc-for>
+</div>
+</div>
+</sc-if>
+<sc-if value="{{ m2Open }}" hint-placeholder-val="{{ false }}">
+<div style="height:60px;flex:none;display:flex;align-items:center;padding:0 16px 0 4px;gap:4px"><button onClick="{{ m2Back }}" style="width:48px;height:48px;border:none;background:none;border-radius:50%;cursor:pointer;color:#15181C;display:flex;align-items:center;justify-content:center"><span class="material-symbols-rounded">arrow_back</span></button><span style="font-size:22px;font-weight:600">{{ m2.t }}</span></div>
+<div style="flex:1;overflow:auto;padding:8px 16px 96px;display:flex;flex-direction:column;gap:12px;position:relative">
+<sc-for list="{{ m2.items }}" as="it" hint-placeholder-count="4"><div style="background:#fff;border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:5px;box-shadow:0 1px 2px rgba(21,24,28,.08)">
+<div style="display:flex;align-items:center;gap:8px"><span style="flex:1;font-size:17px;font-weight:700">{{ it.t }}</span><sc-if value="{{ it.label }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;font-weight:600;padding:3px 10px;border-radius:99px;color:{{ it.c }};background:{{ it.bg }}">{{ it.label }}</span></sc-if></div>
+<span style="font-size:15px">{{ it.s1 }}</span><span style="font-size:14px;color:#424850">{{ it.s2 }}</span>
+</div></sc-for>
+</div>
+<sc-if value="{{ m2.add }}" hint-placeholder-val="{{ false }}"><div style="display:flex;justify-content:flex-end;padding:0 16px 20px;margin-top:-80px;position:relative"><span style="height:56px;padding:0 20px 0 16px;border-radius:16px;background:#D3E4FF;color:#001C38;font-size:15px;font-weight:600;display:flex;align-items:center;gap:10px;box-shadow:0 3px 8px rgba(0,0,0,.18)"><span class="material-symbols-rounded" style="font-variation-settings:'FILL' 1,'wght' 500;">add</span>{{ m2.add }}</span></div></sc-if>
+</sc-if>
+</div></div>
+</div>
+
+</div>
+<p class="dv-next">Prueba: “agrega el formulario Programar (viaje + unidad + carga + fecha) a <a class="dv-oid" href="#2b">2b</a>” · “pantalla de historial de viajes para el operador en <a class="dv-oid" href="#2a">2a</a>” · “prepara los cambios en Compose para OperadorScreen.kt”</p>
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;sinSenal&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Operador&quot;}}">
+const EST = { SIN: ['Sin programar', '#616870'], PROG: ['Programado', '#3949AB'], RUTA: ['En ruta', '#B35300'], COMP: ['Completado', '#2E7D32'] };
+const chip = k => ({ label: EST[k][0], c: EST[k][1], bg: EST[k][1] + '24' });
+const pad = n => String(n).padStart(2, '0');
+const hh = ms => ms == null ? '—' : pad(new Date(ms).getHours()) + ':' + pad(new Date(ms).getMinutes());
+const dur = ms => { const m = Math.max(0, Math.floor(ms / 60000)), h = Math.floor(m / 60); return h > 0 ? `${h} h ${m % 60} min` : `${m % 60} min`; };
+const today = (h, m) => { const d = new Date(); d.setHours(h, m, 0, 0); return d.getTime(); };
+const L = n => n.toLocaleString('es') + ' L';
+const PASOS = [
+  { t: 'Registrar salida', lbl: 'Hora de salida', icon: 'local_shipping', bg: '#C25A00', w: 'salida' },
+  { t: 'Registrar llegada', lbl: 'Hora de llegada', icon: 'flag', bg: '#0B4F8A', w: 'llegada' },
+  { t: 'Registrar entrega del producto', lbl: 'Hora de entrega', icon: 'inventory_2', bg: '#0B4F8A', w: 'entrega' }
+];
+const MODS = [
+  ['OPS', 'Operadores', 'groups', 'Agregar operador'], ['VIA', 'Viajes', 'route', 'Agregar viaje'], ['PROG', 'Programación', 'edit_calendar', 'Programar'],
+  ['UNI', 'Unidades', 'hub', 'Conformar unidad'], ['RUT', 'Rutas', 'map', 'Agregar ruta'], ['TAN', 'Tanques', 'propane_tank', 'Agregar tanque'], ['VEH', 'Vehículos', 'local_shipping', 'Agregar vehículo']
+];
+const UNIS = [
+  { veh: 'A12BC3D', desc: 'Kenworth T800 · Chuto', tanque: 'T-0458', vol: 30000, comp: 3, comb: 'Diésel', op: 'Juan Pérez' },
+  { veh: 'B34KL9M', desc: 'International 7600 · Chuto', tanque: 'T-0312', vol: 20000, comp: 2, comb: 'Gasolina', op: 'María López' },
+  { veh: 'C56PQ2R', desc: 'Mack Granite · Chuto', tanque: 'T-0520', vol: 36000, comp: 4, comb: 'Diésel', op: 'Pedro Gómez' }
+];
+const RUTAS = [['1035', 'Planta Central – Troncal 9 – Estación Oriente 11', 'F-20974'], ['1038', 'Planta Central – Av. Sur – Estación Sur 08', 'F-20977'], ['1042', 'Planta Central – Autopista Norte – Estación Norte 14', 'F-20981'], ['1044', 'Planta Central – Centro – Estación Centro 02', 'F-20983'], ['1045', 'Planta Central – Av. Poniente – Estación Poniente 05', 'F-20984'], ['1046', 'Planta Central – Av. Sur – Estación Sur 02', 'F-20985']];
+const TANQUES = [['T-0458', 30000, 3, 'Diésel', 'A12BC3D'], ['T-0312', 20000, 2, 'Gasolina', 'B34KL9M'], ['T-0520', 36000, 4, 'Diésel', 'C56PQ2R'], ['T-0611', 25000, 2, 'Gasolina', null]];
+const VEHS = [['A12BC3D', 'Kenworth T800', 'Chuto', true], ['B34KL9M', 'International 7600', 'Chuto', true], ['C56PQ2R', 'Mack Granite', 'Chuto', true], ['D78ST4U', 'Freightliner M2', 'Camión cisterna', false]];
+
+class Component extends DCLogic {
+  state = { ced: '', logged: false, loginErr: '', sal: null, lle: null, ent: null, eleg: null, picker: false, pH: 0, pM: 0, confirm: false, err: null, toast: null, pend: 0, mod: 'PROG', vf: 'TODOS', of: 'TODOS', m2: null, now: Date.now(), aIn: false, aMail: '', aPass: '', aErr: '', aShow: false, aKeep: true };
+  adminLogin() {
+    const s = this.state;
+    if (!s.aMail || !s.aPass) return this.setState({ aErr: 'Escribe tu correo y contraseña.' });
+    if (s.aMail.trim().toLowerCase() !== 'admin@logisticagarcia.com' || s.aPass !== 'admin123') return this.setState({ aErr: 'Correo o contraseña incorrectos.' });
+    this.setState({ aIn: true, aErr: '', aPass: '' });
+  }
+  componentDidMount() { this.t = setInterval(() => this.setState({ now: Date.now() }), 15000); }
+  componentWillUnmount() { clearInterval(this.t); clearTimeout(this.tt); }
+  componentDidUpdate() { if (!this.props.sinSenal && this.state.pend) this.setState({ pend: 0 }); }
+  paso() { const s = this.state; return s.sal == null ? 0 : s.lle == null ? 1 : s.ent == null ? 2 : 3; }
+  say(toast) { clearTimeout(this.tt); this.setState({ toast }); this.tt = setTimeout(() => this.setState({ toast: null }), 3200); }
+  confirmar() {
+    const s = this.state, p = this.paso(), h = s.eleg ?? Date.now();
+    let err = null;
+    if (h > Date.now() + 60000) err = `La hora de ${PASOS[p].w} no puede ser posterior a la hora actual.`;
+    else if (p === 1 && h < s.sal) err = 'La llegada no puede ser anterior a la salida.';
+    else if (p === 2 && h < s.sal) err = 'La entrega no puede ser anterior a la salida.';
+    if (err) return this.setState({ confirm: false, err });
+    const pend = s.pend + (this.props.sinSenal ? 1 : 0);
+    if (p === 0) { this.setState({ sal: h, eleg: null, confirm: false, pend }); this.say('Salida registrada. Buen viaje.'); }
+    if (p === 1) { this.setState({ lle: h, eleg: null, confirm: false, pend }); this.say(`Llegada registrada. Viaje de ${dur(h - s.sal)}.`); }
+    if (p === 2) { this.setState({ ent: h, eleg: null, confirm: false, pend }); this.say('Entrega registrada. Viaje terminado.'); }
+  }
+  juan() {
+    const s = this.state, now = s.now;
+    const est = s.lle != null ? 'COMP' : s.sal != null ? 'RUTA' : 'PROG';
+    return { desp: '1042', destino: 'Estación Norte 14', veh: 'A12BC3D', tanque: 'T-0458', op: 'Juan Pérez', carga: 'Diésel', est, live: true,
+      sal: hh(s.sal), lle: hh(s.lle), ent: hh(s.ent),
+      dur: s.lle != null ? dur(s.lle - s.sal) : s.sal != null ? 'Lleva ' + dur(now - s.sal) : '—',
+      extra: s.sal != null ? `Salió a las ${hh(s.sal)}, lleva ${dur(now - s.sal)} en ruta` : 'Programado para hoy, carga Diésel' };
+  }
+  renderVals() {
+    const s = this.state, off = !!this.props.sinSenal, p = this.paso(), now = s.now;
+    const J = this.juan();
+    const tMaria = today(6, 10);
+    const viajes = [
+      J,
+      { desp: '1038', destino: 'Estación Sur 08', veh: 'B34KL9M', tanque: 'T-0312', op: 'María López', carga: 'Gasolina', est: 'RUTA', sal: '06:10', lle: '—', ent: '—', dur: 'Lleva ' + dur(now - tMaria), extra: `Salió a las 06:10, lleva ${dur(now - tMaria)} en ruta` },
+      { desp: '1035', destino: 'Estación Oriente 11', veh: 'C56PQ2R', tanque: 'T-0520', op: 'Pedro Gómez', carga: 'Diésel', est: 'COMP', sal: '04:40', lle: '06:05', ent: '06:30', dur: '1 h 25 min' },
+      { desp: '1045', destino: 'Estación Poniente 05', veh: 'C56PQ2R', tanque: 'T-0520', op: 'Pedro Gómez', carga: 'Diésel', est: 'PROG', sal: '—', lle: '—', ent: '—', dur: '—', extra: 'Programado para mañana, carga Diésel' },
+      { desp: '1044', destino: 'Estación Centro 02', est: 'SIN', carga: '—', sal: '—', lle: '—', ent: '—', dur: '—' },
+      { desp: '1046', destino: 'Estación Sur 02', est: 'SIN', carga: '—', sal: '—', lle: '—', ent: '—', dur: '—' }
+    ].map(v => ({ ...v, ...chip(v.est), live: !!v.live, rowBg: v.live ? '#F3F7FD' : '#fff', border: v.live ? '#0B4F8A' : '#E2E7EE',
+      unidadTxt: v.veh ? `Unidad ${v.veh} + tanque ${v.tanque}, ${v.op}` : 'Sin unidad asignada',
+      unidadCorta: v.veh ? `${v.veh} · ${v.op}` : 'Sin asignar' }));
+    const enCurso = viajes.filter(v => v.est === 'PROG' || v.est === 'RUTA');
+    const enRutaN = enCurso.filter(v => v.est === 'RUTA').length;
+    const juanEnViaje = s.sal != null && s.ent == null;
+    const ops = [
+      { nombre: 'Juan Pérez', cedula: '12345678', tel: '0412 555 0142', unidad: 'En la unidad del vehículo A12BC3D', enViaje: juanEnViaje, viaje: juanEnViaje ? `Salió a las ${hh(s.sal)} rumbo a Estación Norte 14, lleva ${dur(now - s.sal)}` : 'Próximo: Despacho 1042' },
+      { nombre: 'María López', cedula: '87654321', tel: '0414 555 0198', unidad: 'En la unidad del vehículo B34KL9M', enViaje: true, viaje: `Salió a las 06:10 rumbo a Estación Sur 08, lleva ${dur(now - tMaria)}` },
+      { nombre: 'Pedro Gómez', cedula: '11223344', tel: '0416 555 0107', unidad: 'En la unidad del vehículo C56PQ2R', enViaje: false, viaje: 'Próximo: Despacho 1045 (mañana)' },
+      { nombre: 'Ana Torres', cedula: '15678234', tel: '0424 555 0163', unidad: 'Sin unidad asignada', enViaje: false, viaje: '' },
+      { nombre: 'Luis Ramírez', cedula: '19034571', tel: '0412 555 0121', unidad: 'Sin unidad asignada', enViaje: false, viaje: '' }
+    ].map(o => ({ ...o, label: o.enViaje ? 'En viaje' : 'Disponible', c: o.enViaje ? '#B35300' : '#2E7D32', bg: (o.enViaje ? '#B35300' : '#2E7D32') + '24' }));
+    const dispN = ops.filter(o => !o.enViaje).length;
+    const unidades = UNIS.map(u => { const uso = u.veh === 'A12BC3D' ? juanEnViaje : u.veh === 'B34KL9M'; return { ...u, vol: L(u.vol), label: uso ? 'En ruta' : 'Libre', c: uso ? '#B35300' : '#2E7D32', bg: (uso ? '#B35300' : '#2E7D32') + '24' }; });
+    const counts = { OPS: `${ops.length} operadores`, VIA: `${viajes.length} viajes`, PROG: `${enCurso.length} en curso`, UNI: `${UNIS.length} unidades`, RUT: `${RUTAS.length} rutas`, TAN: `${TANQUES.length} tanques`, VEH: `${VEHS.length} vehículos` };
+    const mods = MODS.map(([k, t, icon]) => ({ t, icon, res: counts[k], pick: () => this.setState({ mod: k }), bg: s.mod === k ? '#D3E4FF' : 'transparent', color: s.mod === k ? '#001C38' : '#15181C' }));
+    const cm = MODS.find(m => m[0] === s.mod);
+    const fChip = (on, label, pick) => ({ label, pick, bg: on ? '#D3E4FF' : '#fff', color: on ? '#001C38' : '#424850', border: on ? '#D3E4FF' : '#72787E' });
+    const vChips = [fChip(s.vf === 'TODOS', `Todos (${viajes.length})`, () => this.setState({ vf: 'TODOS' })), ...Object.keys(EST).map(k => fChip(s.vf === k, `${EST[k][0]} (${viajes.filter(v => v.est === k).length})`, () => this.setState({ vf: s.vf === k ? 'TODOS' : k })))];
+    const oChips = [['TODOS', 'Todos'], ['DISP', 'Disponibles'], ['VIAJE', 'En viaje']].map(([k, l]) => fChip(s.of === k, l, () => this.setState({ of: k })));
+    const tables = {
+      RUT: { cols: '120px 1fr 140px', head: ['Despacho', 'Recorrido', 'Factura'], rows: RUTAS },
+      TAN: { cols: '120px 120px 140px 140px 1fr', head: ['Matrícula', 'Volumen', 'Compartimientos', 'Combustible', 'Unidad'], rows: TANQUES.map(t => [t[0], L(t[1]), String(t[2]), t[3], t[4] ? `En ${t[4]}` : 'Libre']) },
+      VEH: { cols: '140px 1fr 180px 160px', head: ['Matrícula', 'Descripción', 'Tipo', 'Unidad'], rows: VEHS.map(v => [v[0], v[1], v[2], v[3] ? 'En unidad' : 'Libre']) }
+    };
+    const pItems = {
+      OPS: ops.map(o => ({ t: o.nombre, label: o.label, c: o.c, bg: o.bg, s1: `Cédula ${o.cedula}`, s2: o.viaje || o.unidad })),
+      VIA: viajes.map(v => ({ t: `Despacho ${v.desp}`, label: v.label, c: v.c, bg: v.bg, s1: `Destino: ${v.destino}`, s2: v.unidadTxt })),
+      PROG: enCurso.map(v => ({ t: `Despacho ${v.desp}`, label: v.label, c: v.c, bg: v.bg, s1: `Destino: ${v.destino}`, s2: v.extra })),
+      UNI: unidades.map(u => ({ t: u.veh, label: u.label, c: u.c, bg: u.bg, s1: `Tanque ${u.tanque} · ${u.vol} · ${u.comb}`, s2: u.op })),
+      RUT: RUTAS.map(r => ({ t: `Despacho ${r[0]}`, s1: r[1], s2: `Factura ${r[2]}` })),
+      TAN: TANQUES.map(t => ({ t: t[0], s1: `${L(t[1])} · ${t[2]} compartimientos`, s2: t[3] })),
+      VEH: VEHS.map(v => ({ t: v[0], s1: v[1], s2: v[2] }))
+    };
+    const m2m = MODS.find(m => m[0] === s.m2);
+    const pasoObj = PASOS[Math.min(p, 2)];
+    const datos = [
+      { icon: 'place', label: 'Destino', value: 'Estación Norte 14', big: true },
+      { icon: 'map', label: 'Ruta', value: 'Planta Central – Autopista Norte – Estación Norte 14' },
+      { icon: 'local_shipping', label: 'Unidad', value: 'Vehículo A12BC3D con tanque T-0458' },
+      { icon: 'local_gas_station', label: 'Carga', value: 'Diésel · 30.000 L en 3 compartimientos' },
+      ...(s.sal == null ? [{ icon: 'calendar_today', label: 'Fecha', value: new Date(now).toLocaleDateString('es', { weekday: 'long', day: 'numeric', month: 'long' }).replace(/^./, c => c.toUpperCase()) }]
+        : s.lle == null ? [{ icon: 'timer', label: 'Tiempo en ruta', value: dur(now - s.sal) }]
+        : [{ icon: 'timer', label: 'Duración', value: dur(s.lle - s.sal) }])
+    ].map(d => ({ ...d, size: d.big ? '24px' : '17px', weight: d.big ? 700 : 400 }));
+    const track = [['Salida', s.sal], ['Llegada', s.lle], ['Entrega', s.ent]].map(([label, v], i) => ({ label, h: hh(v), bar: v != null ? '#2E7D32' : i === p ? '#0B4F8A' : '#E2E7EE', color: v != null || i === p ? '#15181C' : '#72787E' }));
+    const shownPend = off ? s.pend : 0;
+    const setPick = (h, m) => this.setState({ pH: (h + 24) % 24, pM: (m + 60) % 60 });
+    return {
+      clock: hh(now), sigIcon: off ? 'signal_cellular_connected_no_internet_0_bar' : 'signal_cellular_alt',
+      notLogged: !s.logged, logged: s.logged, ced: s.ced, loginErr: s.loginErr, cedBorder: s.loginErr ? '#BA1A1A' : '#72787E',
+      setCed: e => this.setState({ ced: e.target.value.replace(/\D/g, ''), loginErr: '' }),
+      fillDemo: () => this.setState({ ced: '12345678', loginErr: '' }),
+      login: () => s.ced === '12345678' ? this.setState({ logged: true }) : this.setState({ loginErr: s.ced ? 'No hay un operador con esa cédula.' : 'Escribe tu cédula.' }),
+      logout: () => this.setState({ logged: false, ced: '' }),
+      syncBg: shownPend ? '#FFDCC2' : '#E2E7EE', syncColor: shownPend ? '#2E1500' : '#15181C', syncIcon: shownPend ? 'cloud_upload' : 'cloud_done',
+      syncText: shownPend ? `Guardado en el teléfono (${shownPend} por enviar). Se envía solo cuando haya señal.` : off ? 'Sin señal. Lo que registres se guarda en el teléfono.' : 'Todo enviado',
+      open: s.logged && p < 3, done: s.logged && p === 3, jv: { ...J, ...chip(J.est) }, datos, track, paso: pasoObj,
+      horaTxt: s.eleg == null ? `Ahora, ${hh(now)}` : `Hoy a las ${hh(s.eleg)}`, err: s.err,
+      openPicker: () => { const d = new Date(s.eleg ?? Date.now()); this.setState({ picker: true, pH: d.getHours(), pM: d.getMinutes() }); },
+      picker: s.picker, pHs: pad(s.pH), pMs: pad(s.pM),
+      hUp: () => setPick(s.pH + 1, s.pM), hDn: () => setPick(s.pH - 1, s.pM), mUp: () => setPick(s.pH, s.pM + 1), mDn: () => setPick(s.pH, s.pM - 1),
+      useNow: () => this.setState({ eleg: null, picker: false, err: null }), closePicker: () => this.setState({ picker: false }),
+      acceptPicker: () => this.setState({ eleg: today(s.pH, s.pM), picker: false, err: null }),
+      ask: () => this.setState({ confirm: true }), confirm: s.confirm, confirmHora: s.eleg == null ? 'la hora actual' : hh(s.eleg),
+      cancelConfirm: () => this.setState({ confirm: false }), doConfirm: () => this.confirmar(),
+      reset: () => this.setState({ sal: null, lle: null, ent: null, eleg: null, err: null, pend: 0 }), toast: s.toast,
+      adminOut: !s.aIn, adminIn: s.aIn, aMail: s.aMail, aPass: s.aPass, aErr: s.aErr, aBorder: s.aErr ? '#BA1A1A' : '#72787E',
+      aPassType: s.aShow ? 'text' : 'password', aEye: s.aShow ? 'visibility_off' : 'visibility', aKeepIcon: s.aKeep ? 'check_box' : 'check_box_outline_blank',
+      setAMail: e => this.setState({ aMail: e.target.value, aErr: '' }), setAPass: e => this.setState({ aPass: e.target.value, aErr: '' }),
+      aKey: e => { if (e.key === 'Enter') this.adminLogin(); }, toggleShow: () => this.setState({ aShow: !s.aShow }), toggleKeep: () => this.setState({ aKeep: !s.aKeep }),
+      adminLogin: () => this.adminLogin(), adminDemo: () => this.setState({ aMail: 'admin@logisticagarcia.com', aPass: 'admin123', aErr: '' }),
+      adminLogout: () => this.setState({ aIn: false }), aMailShown: s.aMail || 'admin@logisticagarcia.com',
+      mods, cur: { t: cm[1], icon: cm[2], add: cm[3] },
+      isProg: s.mod === 'PROG', isViajes: s.mod === 'VIA', isOps: s.mod === 'OPS', isUni: s.mod === 'UNI', isTable: !!tables[s.mod], tbl: tables[s.mod] || tables.RUT,
+      enCurso, noCurso: !enCurso.length, enRutaN, porSalirN: enCurso.length - enRutaN,
+      vChips, vRows: viajes.filter(v => s.vf === 'TODOS' || v.est === s.vf),
+      dispN, enViajeN: ops.length - dispN, oChips, oRows: ops.filter(o => s.of === 'TODOS' || (s.of === 'DISP' ? !o.enViaje : o.enViaje)), unidades,
+      m2Menu: !s.m2, m2Open: !!s.m2, m2Back: () => this.setState({ m2: null }), openProg: () => this.setState({ m2: 'PROG' }),
+      mods2: MODS.map(([k, t, icon]) => ({ t, icon, res: counts[k], pick: () => this.setState({ m2: k }) })),
+      m2: m2m ? { t: m2m[1], add: m2m[3], items: pItems[m2m[0]] } : { t: '', add: '', items: [] }
+    };
+  }
+}
+</script>
+</body>
+</html>

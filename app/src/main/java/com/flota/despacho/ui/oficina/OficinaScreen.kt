@@ -1,6 +1,7 @@
 package com.flota.despacho.ui.oficina
 
 import androidx.activity.compose.BackHandler
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
@@ -8,44 +9,36 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.Logout
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.EditCalendar
-import androidx.compose.material.icons.filled.Groups
-import androidx.compose.material.icons.filled.Hub
-import androidx.compose.material.icons.filled.LocalShipping
-import androidx.compose.material.icons.filled.Map
-import androidx.compose.material.icons.filled.PropaneTank
-import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material.icons.filled.Route
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.flota.despacho.FlotaApp
+import com.flota.despacho.R
+import com.flota.despacho.data.db.EstadoViaje
 import com.flota.despacho.ui.componentes.*
 import kotlinx.coroutines.launch
 
-enum class Modulo(val titulo: String, val icono: ImageVector) {
-    OPERADORES("Operadores", Icons.Filled.Groups),
-    VIAJES("Viajes", Icons.Filled.Route),
-    PROGRAMACION("Programación", Icons.Filled.EditCalendar),
-    UNIDADES("Unidades", Icons.Filled.Hub),
-    RUTAS("Rutas", Icons.Filled.Map),
-    TANQUES("Tanques", Icons.Filled.PropaneTank),
-    VEHICULOS("Vehículos", Icons.Filled.LocalShipping)
+enum class Modulo(val titulo: String, @DrawableRes val icono: Int) {
+    OPERADORES("Operadores", R.drawable.ic_groups_fill),
+    VIAJES("Viajes", R.drawable.ic_route_fill),
+    PROGRAMACION("Programación", R.drawable.ic_edit_calendar_fill),
+    UNIDADES("Unidades", R.drawable.ic_hub_fill),
+    RUTAS("Rutas", R.drawable.ic_map_fill),
+    TANQUES("Tanques", R.drawable.ic_propane_tank_fill),
+    VEHICULOS("Vehículos", R.drawable.ic_local_shipping_fill)
 }
 
 @Composable
@@ -107,10 +100,10 @@ private fun Menu(
                 title = { Text("Oficina") },
                 actions = {
                     IconButton(onClick = { vm.actualizar(); avisar("Actualizando…") }) {
-                        Icon(Icons.Filled.Refresh, contentDescription = "Actualizar")
+                        Icon(painterResource(R.drawable.ic_refresh), contentDescription = "Actualizar")
                     }
                     IconButton(onClick = onSalir) {
-                        Icon(Icons.AutoMirrored.Filled.Logout, contentDescription = "Cerrar sesión")
+                        Icon(painterResource(R.drawable.ic_logout), contentDescription = "Cerrar sesión")
                     }
                 }
             )
@@ -120,11 +113,15 @@ private fun Menu(
         Column(Modifier.padding(pad).fillMaxSize()) {
             BarraActualizacion(vm.servidorConfigurado, ultimaSync)
             LazyVerticalGrid(
-                columns = GridCells.Adaptive(minSize = 150.dp),
+                columns = GridCells.Fixed(2),
                 contentPadding = PaddingValues(16.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
+                item(span = { GridItemSpan(maxLineSpan) }) {
+                    val enRuta = enCurso.count { it.estado == EstadoViaje.EN_RUTA }
+                    TarjetaAhora(enRuta, enCurso.size - enRuta) { onAbrir(Modulo.PROGRAMACION) }
+                }
                 items(Modulo.entries.toList(), key = { it.name }) { m ->
                     TarjetaModulo(m, resumen(m)) { onAbrir(m) }
                 }
@@ -136,21 +133,49 @@ private fun Menu(
 
 private fun cantidad(n: Int, uno: String, varios: String) = "$n ${if (n == 1) uno else varios}"
 
+/** Acceso rápido a Programación: cuántos viajes están en ruta y cuántos por salir. */
+@Composable
+private fun TarjetaAhora(enRuta: Int, porSalir: Int, onClick: () -> Unit) {
+    Card(
+        onClick = onClick,
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary
+        ),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row(Modifier.padding(horizontal = 16.dp, vertical = 14.dp), verticalAlignment = Alignment.CenterVertically) {
+            Icon(painterResource(R.drawable.ic_local_shipping_fill), contentDescription = null, modifier = Modifier.size(28.dp))
+            Spacer(Modifier.width(14.dp))
+            Column(Modifier.weight(1f)) {
+                Text("Ahora", style = MaterialTheme.typography.labelMedium)
+                Text(
+                    "$enRuta en ruta · $porSalir por salir",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+            Icon(painterResource(R.drawable.ic_chevron_right), contentDescription = "Abrir programación")
+        }
+    }
+}
+
 @Composable
 private fun TarjetaModulo(m: Modulo, resumen: String, onClick: () -> Unit) {
-    ElevatedCard(onClick = onClick, modifier = Modifier.fillMaxWidth().heightIn(min = 150.dp)) {
+    ElevatedCard(onClick = onClick, modifier = Modifier.fillMaxWidth().heightIn(min = 104.dp)) {
         Column(
-            Modifier.fillMaxWidth().padding(16.dp),
+            Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 14.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(10.dp)
+            verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
-            Surface(shape = CircleShape, color = MaterialTheme.colorScheme.primaryContainer, modifier = Modifier.size(64.dp)) {
+            Surface(shape = CircleShape, color = MaterialTheme.colorScheme.primaryContainer, modifier = Modifier.size(48.dp)) {
                 Box(contentAlignment = Alignment.Center) {
-                    Icon(m.icono, contentDescription = null, tint = MaterialTheme.colorScheme.onPrimaryContainer, modifier = Modifier.size(34.dp))
+                    Icon(painterResource(m.icono), contentDescription = null, tint = MaterialTheme.colorScheme.onPrimaryContainer, modifier = Modifier.size(26.dp))
                 }
             }
-            Text(m.titulo, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
-            Secundario(resumen)
+            Text(m.titulo, fontSize = 15.5.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
+            Text(resumen, fontSize = 13.5.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.Center)
         }
     }
 }
@@ -194,7 +219,7 @@ internal fun PantallaModulo(
                 title = { Text(titulo) },
                 navigationIcon = {
                     IconButton(onClick = onVolver) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
+                        Icon(painterResource(R.drawable.ic_arrow_back), contentDescription = "Volver")
                     }
                 }
             )
@@ -203,7 +228,7 @@ internal fun PantallaModulo(
             if (onAgregar != null && textoAgregar != null) {
                 ExtendedFloatingActionButton(
                     onClick = onAgregar,
-                    icon = { Icon(Icons.Filled.Add, contentDescription = null) },
+                    icon = { Icon(painterResource(R.drawable.ic_add_fill), contentDescription = null) },
                     text = { Text(textoAgregar) }
                 )
             }
@@ -214,13 +239,15 @@ internal fun PantallaModulo(
     }
 }
 
-/** Formulario de alta o edición, con el botón de guardar al final. */
+/** Formulario de alta o edición, con el botón de guardar al final y, si hace falta, un aviso arriba de él. */
 @Composable
 internal fun Formulario(
     error: String?,
     textoBoton: String,
     habilitado: Boolean,
     onGuardar: () -> Unit,
+    @DrawableRes icono: Int? = null,
+    aviso: String? = null,
     campos: @Composable ColumnScope.() -> Unit
 ) {
     Column(
@@ -229,7 +256,8 @@ internal fun Formulario(
     ) {
         campos()
         if (error != null) MensajeError(error)
-        BotonGrande(textoBoton, onClick = onGuardar, enabled = habilitado)
+        if (aviso != null) AvisoInfo(aviso)
+        BotonGrande(textoBoton, onClick = onGuardar, icono = icono, enabled = habilitado)
     }
 }
 

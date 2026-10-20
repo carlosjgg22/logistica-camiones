@@ -1,16 +1,11 @@
 package com.flota.despacho.ui.oficina
 
+import com.flota.despacho.R
+import androidx.compose.ui.res.painterResource
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Hub
-import androidx.compose.material.icons.filled.LinkOff
-import androidx.compose.material.icons.filled.LocalGasStation
-import androidx.compose.material.icons.filled.LocalShipping
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.PropaneTank
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -47,7 +42,7 @@ fun ModuloUnidades(vm: OficinaViewModel, snackbar: SnackbarHostState, onVolver: 
         LazyColumn(contentPadding = FinDeLista, verticalArrangement = Arrangement.spacedBy(12.dp)) {
             item { Secundario("Una unidad es un vehículo con un tanque y un operador. Se asigna a los viajes al programarlos.") }
             if (lista.isEmpty()) {
-                item { EstadoVacio(Icons.Filled.Hub, "No hay unidades", "Toca \"Conformar unidad\" para armar la primera.") }
+                item { EstadoVacio(R.drawable.ic_hub, "No hay unidades", "Toca \"Conformar unidad\" para armar la primera.") }
             }
             items(lista, key = { it.id }) { u -> TarjetaUnidad(u) { deshacer = u } }
         }
@@ -76,13 +71,13 @@ private fun TarjetaUnidad(u: UnidadDetalle, onDeshacer: () -> Unit) {
                 Text("Unidad ${u.vehiculo}", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
                 if (u.enUso) ChipTexto("En ruta", colorOcupado()) else ChipTexto("Disponible", colorDisponible())
             }
-            Dato(Icons.Filled.LocalShipping, "Vehículo", "${u.vehiculo}, ${u.descripcionVehiculo}")
-            Dato(Icons.Filled.PropaneTank, "Tanque", "${u.tanque}, ${litros(u.volumenLitros)}")
-            Dato(Icons.Filled.LocalGasStation, "Combustible", u.combustible)
-            Dato(Icons.Filled.Person, "Operador", u.operador)
+            Dato(R.drawable.ic_local_shipping, "Vehículo", "${u.vehiculo}, ${u.descripcionVehiculo}")
+            Dato(R.drawable.ic_propane_tank, "Tanque", "${u.tanque}, ${litros(u.volumenLitros)}")
+            Dato(R.drawable.ic_local_gas_station, "Combustible", u.combustible)
+            Dato(R.drawable.ic_person, "Operador", u.operador)
             if (!u.enUso) {
                 TextButton(onClick = onDeshacer, contentPadding = PaddingValues(horizontal = 0.dp)) {
-                    Icon(Icons.Filled.LinkOff, contentDescription = null)
+                    Icon(painterResource(R.drawable.ic_link_off_fill), contentDescription = null)
                     Spacer(Modifier.width(8.dp))
                     Text("Deshacer unidad")
                 }

@@ -1,19 +1,16 @@
 package com.flota.despacho.ui.oficina
 
+import com.flota.despacho.R
+import androidx.annotation.DrawableRes
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.LocalShipping
-import androidx.compose.material.icons.filled.Map
-import androidx.compose.material.icons.filled.PropaneTank
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -30,7 +27,7 @@ import com.flota.despacho.ui.theme.colorOcupado
 private fun <T> Catalogo(
     titulo: String,
     singular: String,
-    icono: ImageVector,
+    @DrawableRes icono: Int,
     lista: List<T>,
     clave: (T) -> String,
     snackbar: SnackbarHostState,
@@ -87,7 +84,7 @@ private fun Titulo(texto: String, enUnidad: Boolean? = null) {
 fun ModuloRutas(vm: OficinaViewModel, snackbar: SnackbarHostState, onVolver: () -> Unit, avisar: (String) -> Unit) {
     val lista by vm.rutas.collectAsStateWithLifecycle()
     Catalogo(
-        Modulo.RUTAS.titulo, "ruta", Icons.Filled.Map, lista, { it.id }, snackbar, onVolver, avisar,
+        Modulo.RUTAS.titulo, "ruta", R.drawable.ic_map, lista, { it.id }, snackbar, onVolver, avisar,
         tarjeta = { r ->
             Titulo("Despacho ${r.numeroDespacho}")
             Text(r.recorrido, style = MaterialTheme.typography.bodyLarge)
@@ -122,7 +119,7 @@ fun ModuloTanques(vm: OficinaViewModel, snackbar: SnackbarHostState, onVolver: (
     val lista by vm.tanques.collectAsStateWithLifecycle()
     val combustibles by vm.combustibles.collectAsStateWithLifecycle()
     Catalogo(
-        Modulo.TANQUES.titulo, "tanque", Icons.Filled.PropaneTank, lista, { it.id }, snackbar, onVolver, avisar,
+        Modulo.TANQUES.titulo, "tanque", R.drawable.ic_propane_tank, lista, { it.id }, snackbar, onVolver, avisar,
         tarjeta = { t ->
             Titulo("Tanque ${t.matricula}", t.enUnidad)
             Text("${litros(t.volumenLitros)}, ${cantidadCompartimientos(t.compartimientos)}", style = MaterialTheme.typography.bodyLarge)
@@ -167,7 +164,7 @@ fun ModuloVehiculos(vm: OficinaViewModel, snackbar: SnackbarHostState, onVolver:
     val lista by vm.vehiculos.collectAsStateWithLifecycle()
     val tipos by vm.tiposVehiculo.collectAsStateWithLifecycle()
     Catalogo(
-        Modulo.VEHICULOS.titulo, "vehículo", Icons.Filled.LocalShipping, lista, { it.id }, snackbar, onVolver, avisar,
+        Modulo.VEHICULOS.titulo, "vehículo", R.drawable.ic_local_shipping, lista, { it.id }, snackbar, onVolver, avisar,
         tarjeta = { v ->
             Titulo("Vehículo ${v.matricula}", v.enUnidad)
             Text(v.descripcion, style = MaterialTheme.typography.bodyLarge)

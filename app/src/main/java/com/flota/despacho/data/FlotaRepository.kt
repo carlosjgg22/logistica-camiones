@@ -8,6 +8,14 @@ import com.flota.despacho.sync.Colecciones
 import com.flota.despacho.sync.FirebaseSync
 import com.flota.despacho.sync.PaqueteSync
 import com.flota.despacho.sync.SyncWorker
+import com.google.firebase.Firebase
+import com.google.firebase.FirebaseException
+import com.google.firebase.FirebaseNetworkException
+import com.google.firebase.FirebaseTooManyRequestsException
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
+import com.google.firebase.auth.auth
+import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -30,6 +38,7 @@ class FlotaRepository(private val db: AppDatabase, private val context: Context)
     // ---------- Lecturas ----------
     fun viajeAbierto(idOperador: String) = dao.viajeAbierto(idOperador)
     fun proximoViaje(idOperador: String) = dao.proximoViaje(idOperador)
+    fun ultimoTerminado(idOperador: String) = dao.ultimoTerminado(idOperador)
     fun viajes() = dao.viajes()
     fun viajesEnCurso() = dao.viajesEnCurso()
     fun operadores() = dao.operadores()
@@ -43,6 +52,37 @@ class FlotaRepository(private val db: AppDatabase, private val context: Context)
 
     suspend fun operadorPorCedula(cedula: String) = dao.operadorPorCedula(cedula.trim())
     suspend fun operador(id: String) = dao.operador(id)
+
+    // ---------- Administrador: correo y contraseña de Firebase Auth ----------
+
+    /** Devuelve null si entró, o el mensaje de error para mostrar. */
+    suspend fun entrarAdministrador(correo: String, clave: String): String? {
+        if (!servidorConfigurado) return "Sin servidor configurado: el administrador necesita Firebase para entrar."
+        return try {
+            Firebase.auth.signInWithEmailAndPassword(correo.trim(), clave).await()
+            pedirSincronizacion()
+            null
+        } catch (e: FirebaseAuthInvalidCredentialsException) {
+            "Correo o contraseña incorrectos."
+        } catch (e: FirebaseAuthInvalidUserException) {
+            "Correo o contraseña incorrectos."
+        } catch (e: FirebaseNetworkException) {
+            "Sin conexión. Revisa la señal e intenta de nuevo."
+        } catch (e: FirebaseTooManyRequestsException) {
+            "Demasiados intentos. Espera unos minutos e intenta de nuevo."
+        } catch (e: FirebaseException) {
+            "No se pudo iniciar sesión. Intenta de nuevo."
+        }
+    }
+
+    /** true si hay un administrador con sesión de Firebase (no anónima). */
+    val administradorConectado: Boolean
+        get() = servidorConfigurado && Firebase.auth.currentUser?.isAnonymous == false
+
+    /** Al salir vuelve la sesión anónima, la que usa la sincronización del operador. */
+    fun cerrarSesionAdministrador() {
+        if (servidorConfigurado) Firebase.auth.signOut()
+    }
 
     /** Guarda y pide subirlo al servidor. */
     private suspend fun guardando(bloque: suspend () -> String?): String? {

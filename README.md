@@ -9,13 +9,15 @@ y se sincroniza con el servidor en los dos sentidos cuando hay señal (WorkManag
 3. Run en un emulador o teléfono con Android 8.0+.
 
 Datos de prueba: operadores con cédula `12345678` (Juan), `87654321` (María) o `11223344` (Pedro).
-Oficina (consulta): PIN `1234`.
+Administrador (oficina): correo y contraseña de un usuario de Firebase Auth (ver "Conectar Firebase").
+El mismo usuario sirve para el panel de la PC.
 
 Si ya habías instalado la versión anterior, la base local se recrea sola (cambió el esquema)
 y los datos de prueba se cargan de nuevo.
 
 ## Roles
-**Oficina (PIN)**: un menú de íconos con 7 módulos.
+**Administrador (correo y contraseña)**: un menú de íconos con 7 módulos. Con "Mantener la sesión
+iniciada" sin marcar, la sesión se cierra la próxima vez que se abre la app.
 1. **Operadores**: alta y edición (nombre, apellido, teléfono, cédula). Muestra quién está
    disponible o en viaje, en qué unidad está y un botón para llamar.
 2. **Viajes**: alta y edición (despacho y ruta, destino, unidad, fecha de salida, de llegada y de
@@ -45,7 +47,9 @@ la app compila y funciona, pero cada teléfono solo ve lo suyo.
 1. En https://console.firebase.google.com crea un proyecto.
 2. Agrega una app **Android** con el paquete `com.flota.despacho` y descarga `google-services.json`.
    Ponlo en `app/google-services.json`. No hace falta tocar nada más del código.
-3. **Authentication > Método de acceso**: activa **Anónimo**.
+3. **Authentication > Método de acceso**: activa **Anónimo** (lo usan los operadores) y
+   **Correo electrónico/contraseña** (administradores). En **Authentication > Usuarios > Agregar
+   usuario** crea el correo y la contraseña de cada administrador.
 4. **Firestore Database**: créala (modo producción) y en **Reglas** pega el contenido de `firestore.rules`.
 5. Recompila e instala. La primera vez que un teléfono sincroniza con Firestore vacío, sube los
    datos de prueba (operadores, unidades, rutas…). Después edítalos desde la consola de Firebase.

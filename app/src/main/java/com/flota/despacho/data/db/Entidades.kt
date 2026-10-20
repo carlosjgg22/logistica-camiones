@@ -168,6 +168,8 @@ data class ViajeDetalle(
     val destino: String,
     val vehiculo: String?,
     val tanque: String?,
+    val volumenLitros: Int?,
+    val compartimientos: Int?,
     val operador: String?,
     val fechaSalida: Long?,
     val fechaLlegada: Long?,
@@ -200,6 +202,7 @@ data class UnidadDetalle(
     val idTipoCombustible: String,
     val combustible: String,
     val operador: String,
+    val nombreOperador: String,
     val enUso: Boolean
 )
 
