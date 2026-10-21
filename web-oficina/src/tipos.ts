@@ -47,6 +47,8 @@ export const COLECCIONES = {
   rutas: 'rutas_v2',
   viajes: 'viajes_v2',
   programaciones: 'programaciones_v2',
+  inspecciones: 'inspecciones_v2',
+  averias: 'averias_v2',
 } as const
 
 export type Coleccion = keyof typeof COLECCIONES
@@ -61,6 +63,8 @@ export interface Datos {
   rutas: Ruta[]
   viajes: Viaje[]
   programaciones: Programacion[]
+  inspecciones: Inspeccion[]
+  averias: Averia[]
 }
 
 export type EstadoViaje = 'SIN_PROGRAMAR' | 'PROGRAMADO' | 'EN_RUTA' | 'COMPLETADO'
@@ -98,3 +102,27 @@ export interface OperadorEstado extends Operador {
 
 export interface VehiculoDetalle extends Vehiculo { tipo: string; enUnidad: boolean }
 export interface TanqueDetalle extends Tanque { combustible: string; enUnidad: boolean }
+
+// ---------- Checklist CHK-CTR-01 y averías (app: data/Checklist.kt y Entidades.kt) ----------
+
+export type Gravedad = 'LEVE' | 'GRAVE'
+export type Momento = 'SALIDA' | 'LLEGADA'
+
+/** [resultados] es JSON: [{ codigo, resultado: 'B' | 'M' | 'NA', gravedad, observacion }] */
+export interface Inspeccion {
+  id: string; idViaje: string; idUnidad: string; idOperador: string; momento: Momento
+  fecha: number; kilometraje: number; resultados: string; observaciones: string; actualizado: number
+}
+
+/** Un punto en M. Queda en el chuto (idVehiculo) o en la cisterna (idTanque). Una GRAVE abierta bloquea la salida. */
+export interface Averia {
+  id: string; idInspeccion: string; idViaje: string; idUnidad: string; idOperador: string
+  idVehiculo: string | null; idTanque: string | null; codigo: string; punto: string
+  gravedad: Gravedad; observacion: string; momento: Momento; fecha: number
+  resuelta: boolean; fechaResuelta: number | null; resueltaPor: string | null; actualizado: number
+}
+
+export interface AveriaDetalle extends Averia {
+  /** "Chuto A12BC3D" o "Cisterna X1234A" */
+  equipo: string; operador: string; numeroDespacho: string | null; destino: string | null; kilometraje: number | null
+}

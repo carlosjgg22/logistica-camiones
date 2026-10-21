@@ -19,7 +19,7 @@ const MARGEN_MS = 60_000
  */
 export const erroresEscritura = new EventTarget()
 
-function escribir(cambios: { coleccion: Coleccion; registro: { id: string } }[]) {
+function escribir<R extends { id: string }>(cambios: { coleccion: Coleccion; registro: R }[]) {
   const lote = writeBatch(db)
   for (const { coleccion, registro } of cambios) {
     // servidorTs: la hora del servidor, que usan los teléfonos para bajar solo lo nuevo
@@ -118,9 +118,22 @@ export function programarViaje(d: Datos, idViaje: string, idUnidad: string, idTi
   if (d.programaciones.some((p) => p.idViaje === idViaje)) return 'Ese viaje ya está programado.'
   const t = Date.now()
   const programacion: Programacion = { id: nuevoId(), idViaje, idTipoCombustible, fechaProgramada: fecha, actualizado: t }
-  escribir([
-    { coleccion: 'viajes', registro: { ...viaje, idUnidad, idOperador: unidad.idOperador, actualizado: t } },
+  const conUnidad: Viaje = { ...viaje, idUnidad, idOperador: unidad.idOperador, actualizado: t }
+  escribir<Viaje | Programacion>([
+    { coleccion: 'viajes', registro: conUnidad },
     { coleccion: 'programaciones', registro: programacion },
   ])
+  return null
+}
+
+// ---------- Averías ----------
+
+/** La oficina marca resuelta una avería: si era grave, el chuto o la cisterna vuelven a poder salir. */
+export function resolverAveria(d: Datos, idAveria: string, quien: string | null): string | null {
+  const a = d.averias.find((x) => x.id === idAveria)
+  if (!a) return 'No se encontró la avería.'
+  if (a.resuelta) return null
+  const t = Date.now()
+  escribir([{ coleccion: 'averias', registro: { ...a, resuelta: true, fechaResuelta: t, resueltaPor: quien, actualizado: t } }])
   return null
 }

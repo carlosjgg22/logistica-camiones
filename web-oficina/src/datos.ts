@@ -2,17 +2,20 @@ import { useEffect, useMemo, useState } from 'react'
 import { collection, onSnapshot } from 'firebase/firestore'
 import { db } from './firebase'
 import {
-  COLECCIONES, type Coleccion, type Datos, type EstadoViaje, type OperadorEstado, type TanqueDetalle,
+  COLECCIONES, type AveriaDetalle, type Coleccion, type Datos, type EstadoViaje, type OperadorEstado, type TanqueDetalle,
   type UnidadDetalle, type VehiculoDetalle, type ViajeDetalle,
 } from './tipos'
 
+/** Se dispara con cada avería que reporta un operador mientras el panel está abierto. */
+export const averiasNuevas = new EventTarget()
+
 const VACIO: Datos = {
   tiposVehiculo: [], tiposCombustible: [], operadores: [], vehiculos: [], tanques: [],
-  unidades: [], rutas: [], viajes: [], programaciones: [],
+  unidades: [], rutas: [], viajes: [], programaciones: [], inspecciones: [], averias: [],
 }
 
 /**
- * Escucha en vivo las 9 colecciones. [ultimaSync] es la hora de la última respuesta del servidor
+ * Escucha en vivo las colecciones (las mismas de la app). [ultimaSync] es la hora de la última respuesta del servidor
  * (no de la caché local), para el aviso "Datos actualizados a las HH:mm".
  */
 export function useDatos() {
@@ -21,6 +24,7 @@ export function useDatos() {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
+    let primeraCargaAverias = true
     const cancelar = (Object.keys(COLECCIONES) as Coleccion[]).map((clave) =>
       onSnapshot(
         collection(db, COLECCIONES[clave]),
@@ -33,6 +37,13 @@ export function useDatos() {
           })
           setDatos((prev) => ({ ...prev, [clave]: items }))
           if (!snap.metadata.fromCache) setUltimaSync(Date.now())
+          // Averías que llegan del servidor después de la primera carga: aviso emergente en el panel
+          if (clave === 'averias') {
+            if (primeraCargaAverias) { if (!snap.metadata.fromCache) primeraCargaAverias = false; return }
+            snap.docChanges()
+              .filter((c) => c.type === 'added' && !c.doc.metadata.hasPendingWrites)
+              .forEach((c) => averiasNuevas.dispatchEvent(new CustomEvent('nueva', { detail: { ...c.doc.data(), id: c.doc.id } })))
+          }
         },
         (e) => setError(e.code === 'permission-denied' ? 'Sin permiso para leer los datos.' : 'No se pudieron leer los datos.'),
       ),
@@ -139,6 +150,27 @@ export function armarVistas(d: Datos) {
     enUnidad: unidadesActivas.some((u) => u.idTanque === t.id),
   })).sort(porTexto((t) => t.matricula))
 
+  const viajesPorId = new Map(d.viajes.map((v) => [v.id, v]))
+  const inspecciones = porId(d.inspecciones)
+  // Abiertas primero (las graves arriba), después las resueltas; dentro, la más nueva primero
+  const averias: AveriaDetalle[] = d.averias.map((a) => {
+    const ve = a.idVehiculo ? vehiculos.get(a.idVehiculo) : undefined
+    const t = a.idTanque ? tanques.get(a.idTanque) : undefined
+    const o = operadores.get(a.idOperador)
+    const v = viajesPorId.get(a.idViaje)
+    return {
+      ...a,
+      equipo: ve ? `Chuto ${ve.matricula}` : t ? `Cisterna ${t.matricula}` : '—',
+      operador: o ? `${o.nombre} ${o.apellido}` : '—',
+      numeroDespacho: v ? rutas.get(v.idRuta)?.numeroDespacho ?? null : null,
+      destino: v?.destino ?? null,
+      kilometraje: inspecciones.get(a.idInspeccion)?.kilometraje ?? null,
+    }
+  }).sort((a, b) =>
+    Number(a.resuelta) - Number(b.resuelta) ||
+    Number(b.gravedad === 'GRAVE') - Number(a.gravedad === 'GRAVE') ||
+    b.fecha - a.fecha)
+
   const rutasOrdenadas = [...d.rutas].sort((a, b) => b.numeroDespacho.localeCompare(a.numeroDespacho, 'es'))
   const combustiblesOrdenados = [...d.tiposCombustible].sort(porTexto((c) => c.nombre))
   const tiposVehiculoOrdenados = [...d.tiposVehiculo].sort(porTexto((t) => t.nombre))
@@ -152,6 +184,7 @@ export function armarVistas(d: Datos) {
     rutas: rutasOrdenadas,
     combustibles: combustiblesOrdenados,
     tiposVehiculo: tiposVehiculoOrdenados,
+    averias,
   }
 }
 

@@ -1,0 +1,17 @@
+{
+  "name": "LogisticaGarcía Oficina",
+  "short_name": "Oficina",
+  "description": "Panel de oficina de despachos: programa viajes, arma unidades y sigue a cada operador.",
+  "lang": "es",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#F4F6F9",
+  "theme_color": "#0B4F8A",
+  "icons": [
+    { "src": "/icono-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icono-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icono-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "/icono.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}

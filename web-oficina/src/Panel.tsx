@@ -1,19 +1,19 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { signOut, type User } from 'firebase/auth'
 import { auth } from './firebase'
-import { useDatos } from './datos'
+import { averiasNuevas, useDatos } from './datos'
 import { erroresEscritura } from './escribir'
 import { cantidad, hora } from './formato'
 import { Icono, MensajeError, Snackbar } from './componentes/base'
-import { Operadores, Programacion, Rutas, Tanques, Unidades, Vehiculos, Viajes } from './modulos/listas'
+import { Averias, Operadores, Programacion, Rutas, Tanques, Unidades, Vehiculos, Viajes } from './modulos/listas'
 import {
   FormOperador, FormProgramar, FormRuta, FormTanque, FormUnidad, FormVehiculo, FormViaje,
 } from './modulos/formularios'
-import type { OperadorEstado, Ruta, TanqueDetalle, VehiculoDetalle, ViajeDetalle } from './tipos'
+import type { Averia, OperadorEstado, Ruta, TanqueDetalle, VehiculoDetalle, ViajeDetalle } from './tipos'
 
-export type Modulo = 'operadores' | 'viajes' | 'programacion' | 'unidades' | 'rutas' | 'tanques' | 'vehiculos'
+export type Modulo = 'operadores' | 'viajes' | 'programacion' | 'unidades' | 'rutas' | 'tanques' | 'vehiculos' | 'averias'
 
-const MODULOS: { clave: Modulo; titulo: string; icono: string; accion: string }[] = [
+const MODULOS: { clave: Modulo; titulo: string; icono: string; accion: string | null }[] = [
   { clave: 'operadores', titulo: 'Operadores', icono: 'groups', accion: 'Agregar operador' },
   { clave: 'viajes', titulo: 'Viajes', icono: 'route', accion: 'Agregar viaje' },
   { clave: 'programacion', titulo: 'Programación', icono: 'edit_calendar', accion: 'Programar' },
@@ -21,6 +21,7 @@ const MODULOS: { clave: Modulo; titulo: string; icono: string; accion: string }[
   { clave: 'rutas', titulo: 'Rutas', icono: 'map', accion: 'Agregar ruta' },
   { clave: 'tanques', titulo: 'Tanques', icono: 'propane_tank', accion: 'Agregar tanque' },
   { clave: 'vehiculos', titulo: 'Vehículos', icono: 'local_shipping', accion: 'Agregar vehículo' },
+  { clave: 'averias', titulo: 'Averías', icono: 'warning', accion: null },
 ]
 
 /** Formulario abierto: módulo y registro a editar (null = alta). */
@@ -49,6 +50,8 @@ const iniciales = (u: User) => {
 
 export function Panel({ usuario }: { usuario: User }) {
   const datos = useDatos()
+  const datosRef = useRef(datos)
+  datosRef.current = datos
   const [modulo, setModulo] = useState<Modulo>(leerModulo)
   const [edicion, setEdicion] = useState<Edicion | null>(null)
   const [snack, setSnack] = useState<string | null>(null)
@@ -65,6 +68,19 @@ export function Panel({ usuario }: { usuario: User }) {
     return () => erroresEscritura.removeEventListener('error', oir)
   }, [])
 
+  // Aviso emergente cuando un operador reporta una avería (queda hasta que se cierra o se abre el módulo)
+  const [alerta, setAlerta] = useState<string | null>(null)
+  useEffect(() => {
+    const oir = (e: Event) => {
+      const a = (e as CustomEvent<Averia>).detail
+      const o = datosRef.current.datos.operadores.find((x) => x.id === a.idOperador)
+      setAlerta(`Avería ${a.gravedad === 'GRAVE' ? 'GRAVE' : 'leve'} reportada${o ? ` por ${o.nombre} ${o.apellido}` : ''}: ${a.codigo} ${a.punto}. “${a.observacion}”`)
+    }
+    averiasNuevas.addEventListener('nueva', oir)
+    return () => averiasNuevas.removeEventListener('nueva', oir)
+  }, [])
+  const abiertas = datos.averias.filter((a) => !a.resuelta).length
+
   const resumen = (m: Modulo) => {
     switch (m) {
       case 'operadores': return cantidad(datos.operadores.length, 'operador', 'operadores')
@@ -74,6 +90,7 @@ export function Panel({ usuario }: { usuario: User }) {
       case 'rutas': return cantidad(datos.rutas.length, 'ruta', 'rutas')
       case 'tanques': return cantidad(datos.tanques.length, 'tanque', 'tanques')
       case 'vehiculos': return cantidad(datos.vehiculos.length, 'vehículo', 'vehículos')
+      case 'averias': { const n = datos.averias.filter((a) => !a.resuelta).length; return n === 0 ? 'Sin abiertas' : cantidad(n, 'abierta', 'abiertas') }
     }
   }
 
@@ -95,6 +112,7 @@ export function Panel({ usuario }: { usuario: User }) {
             <button key={m.clave} className={m.clave === modulo ? 'activo' : ''} onClick={() => setModulo(m.clave)}>
               <Icono nombre={m.icono} />
               <span><span className="titulo">{m.titulo}</span><span className="resumen">{resumen(m.clave)}</span></span>
+              {m.clave === 'averias' && abiertas > 0 && <span className="contador" aria-label={`${abiertas} averías abiertas`}>{abiertas}</span>}
             </button>
           ))}
         </nav>
@@ -111,7 +129,7 @@ export function Panel({ usuario }: { usuario: User }) {
         <header className="encabezado">
           <Icono nombre={actual.icono} />
           <h1>{actual.titulo}</h1>
-          <button className="boton boton-accion" onClick={abrirAlta}><Icono nombre="add" relleno />{actual.accion}</button>
+          {actual.accion && <button className="boton boton-accion" onClick={abrirAlta}><Icono nombre="add" relleno />{actual.accion}</button>}
         </header>
         <div className="contenido">
           {datos.error && <MensajeError texto={datos.error} />}
@@ -122,6 +140,7 @@ export function Panel({ usuario }: { usuario: User }) {
           {modulo === 'rutas' && <Rutas datos={datos} onEditar={(item) => setEdicion({ modulo: 'rutas', item })} />}
           {modulo === 'tanques' && <Tanques datos={datos} onEditar={(item) => setEdicion({ modulo: 'tanques', item })} />}
           {modulo === 'vehiculos' && <Vehiculos datos={datos} onEditar={(item) => setEdicion({ modulo: 'vehiculos', item })} />}
+          {modulo === 'averias' && <Averias datos={datos} quien={usuario.email} onListo={listo} />}
         </div>
       </main>
 
@@ -134,6 +153,14 @@ export function Panel({ usuario }: { usuario: User }) {
       {edicion?.modulo === 'vehiculos' && <FormVehiculo {...props} item={edicion.item} />}
 
       <Snackbar texto={snack} onFin={cerrarSnack} />
+      {alerta && (
+        <div className="snackbar alerta" role="alert">
+          <Icono nombre="warning" relleno />
+          <span>{alerta}</span>
+          <button onClick={() => { setModulo('averias'); setAlerta(null) }}>Ver</button>
+          <button onClick={() => setAlerta(null)} aria-label="Cerrar">✕</button>
+        </div>
+      )}
     </div>
   )
 }

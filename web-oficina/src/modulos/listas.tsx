@@ -1,9 +1,9 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import type { DatosPanel } from '../datos'
-import { deshacerUnidad } from '../escribir'
-import { diaRelativo, duracion, hora, litros } from '../formato'
+import { deshacerUnidad, resolverAveria } from '../escribir'
+import { diaRelativo, duracion, fechaHora, hora, litros } from '../formato'
 import { ESTADOS, ETIQUETA_ESTADO, type EstadoViaje, type OperadorEstado, type Ruta, type TanqueDetalle, type VehiculoDetalle, type ViajeDetalle } from '../tipos'
-import { ChipEstado, ChipLibre, EstadoVacio, Icono } from '../componentes/base'
+import { ChipEstado, ChipLibre, ChipTexto, EstadoVacio, Icono } from '../componentes/base'
 
 /** Hora actual que se refresca sola, para "lleva X en ruta". */
 function useAhora(cadaMs = 30_000) {
@@ -232,3 +232,64 @@ export const Vehiculos = ({ datos, onEditar }: { datos: DatosPanel; onEditar: (v
     vacio={{ icono: 'local_shipping', titulo: 'Todavía no hay vehículos', texto: 'Toca "Agregar vehículo" para empezar.' }}
   />
 )
+
+// ---------------- Averías ----------------
+
+const COLOR_GRAVEDAD = { GRAVE: 'var(--error)', LEVE: 'var(--estado-en-ruta)' } as const
+
+export function Averias({ datos, quien, onListo }: { datos: DatosPanel; quien: string | null; onListo: (texto: string) => void }) {
+  const [verResueltas, setVerResueltas] = useState(false)
+  const abiertas = datos.averias.filter((a) => !a.resuelta)
+  const visibles = datos.averias.filter((a) => a.resuelta === verResueltas)
+  const graves = abiertas.filter((a) => a.gravedad === 'GRAVE').length
+
+  const resolver = (a: (typeof datos.averias)[number]) => {
+    const extra = a.gravedad === 'GRAVE' ? ` ${a.equipo.split(' ')[0] === 'Chuto' ? 'El chuto' : 'La cisterna'} vuelve a poder salir.` : ''
+    if (!window.confirm(`¿Marcar resuelta la avería ${a.codigo} ${a.punto} de ${a.equipo}?${extra}`)) return
+    onListo(resolverAveria(datos.datos, a.id, quien) ?? 'Avería marcada como resuelta')
+  }
+
+  return (
+    <>
+      <h2>{abiertas.length === 0 ? 'Sin averías abiertas' : `${abiertas.length} abiertas, ${graves} graves`}</h2>
+      <div className="filtros">
+        <button className={'filtro' + (!verResueltas ? ' activo' : '')} onClick={() => setVerResueltas(false)}>Abiertas ({abiertas.length})</button>
+        <button className={'filtro' + (verResueltas ? ' activo' : '')} onClick={() => setVerResueltas(true)}>
+          Resueltas ({datos.averias.length - abiertas.length})
+        </button>
+      </div>
+      {visibles.length === 0 ? (
+        <EstadoVacio
+          icono="fact_check"
+          titulo={verResueltas ? 'No hay averías resueltas' : 'No hay averías abiertas'}
+          texto="Las reportan los operadores en el checklist de salida o de llegada."
+        />
+      ) : (
+        <div className="grilla">
+          {visibles.map((a) => (
+            <div key={a.id} className={'tarjeta' + (!a.resuelta && a.gravedad === 'GRAVE' ? ' tarjeta-grave' : '')}>
+              <div className="cabeza">
+                <b className="mono">{a.equipo}</b>
+                {a.resuelta
+                  ? <ChipTexto texto="Resuelta" color="var(--estado-completado)" />
+                  : <ChipTexto texto={a.gravedad === 'GRAVE' ? 'Grave' : 'Leve'} color={COLOR_GRAVEDAD[a.gravedad]} />}
+              </div>
+              <span className="linea">{a.codigo} {a.punto}</span>
+              <span className="sec">“{a.observacion}”</span>
+              <span className="dato"><Icono nombre="person" />{a.operador}, al {a.momento === 'SALIDA' ? 'salir' : 'llegar'} · {fechaHora(a.fecha)}</span>
+              {a.numeroDespacho && (
+                <span className="dato"><Icono nombre="route" />Despacho {a.numeroDespacho}{a.destino ? ` a ${a.destino}` : ''}{a.kilometraje != null ? ` · ${new Intl.NumberFormat('es').format(a.kilometraje)} km` : ''}</span>
+              )}
+              {!a.resuelta && a.gravedad === 'GRAVE' && <span className="sec">No puede salir hasta que la marques resuelta.</span>}
+              {a.resuelta ? (
+                <span className="sec">Resuelta {a.fechaResuelta ? fechaHora(a.fechaResuelta) : ''}{a.resueltaPor ? ` por ${a.resueltaPor}` : ''}</span>
+              ) : (
+                <div><button className="boton boton-texto" onClick={() => resolver(a)}><Icono nombre="task_alt" relleno tam={18} />Marcar resuelta</button></div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+    </>
+  )
+}

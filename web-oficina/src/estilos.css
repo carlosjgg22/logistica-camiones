@@ -240,3 +240,12 @@ button.tarjeta:hover, .tarjeta[role=button]:hover { border-color: var(--outline)
   .contenido { padding: 16px; }
   .encabezado { padding: 0 16px; }
 }
+
+/* Averías */
+.tarjeta-grave { border-color: var(--error); box-shadow: 0 0 0 1px var(--error), var(--sombra); }
+.contador {
+  min-width: 20px; height: 20px; padding: 0 6px; border-radius: 99px; margin-left: auto;
+  background: var(--error); color: var(--blanco); font-size: 12px; font-weight: 700; display: grid; place-items: center;
+}
+.snackbar.alerta { background: var(--error); color: var(--blanco); display: flex; align-items: center; gap: 12px; bottom: auto; top: 20px; }
+.snackbar.alerta button { background: none; border: 1px solid rgba(255,255,255,.6); color: inherit; border-radius: 8px; padding: 4px 10px; font-weight: 600; }
