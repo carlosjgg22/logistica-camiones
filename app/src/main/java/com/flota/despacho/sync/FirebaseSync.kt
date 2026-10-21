@@ -28,7 +28,9 @@ data class PaqueteSync(
     val unidades: List<Unidad>,
     val rutas: List<Ruta>,
     val viajes: List<Viaje>,
-    val programaciones: List<Programacion>
+    val programaciones: List<Programacion>,
+    val inspecciones: List<Inspeccion> = emptyList(),
+    val averias: List<Averia> = emptyList()
 )
 
 /**
@@ -46,6 +48,8 @@ object Colecciones {
     const val RUTAS = "rutas$V"
     const val VIAJES = "viajes$V"
     const val PROGRAMACIONES = "programaciones$V"
+    const val INSPECCIONES = "inspecciones$V"
+    const val AVERIAS = "averias$V"
 }
 
 /**
@@ -109,7 +113,9 @@ object FirebaseSync {
             unidades = bajar(Colecciones.UNIDADES, Unidad::class.java),
             rutas = bajar(Colecciones.RUTAS, Ruta::class.java),
             viajes = bajar(Colecciones.VIAJES, Viaje::class.java),
-            programaciones = bajar(Colecciones.PROGRAMACIONES, Programacion::class.java)
+            programaciones = bajar(Colecciones.PROGRAMACIONES, Programacion::class.java),
+            inspecciones = bajar(Colecciones.INSPECCIONES, Inspeccion::class.java),
+            averias = bajar(Colecciones.AVERIAS, Averia::class.java)
         )
         return paquete.copy(horaServidor = maximo)
     }
@@ -140,6 +146,8 @@ object FirebaseSync {
         p.rutas.forEach { poner(Colecciones.RUTAS, it.id, it) }
         p.viajes.forEach { poner(Colecciones.VIAJES, it.id, it) }
         p.programaciones.forEach { poner(Colecciones.PROGRAMACIONES, it.id, it) }
+        p.inspecciones.forEach { poner(Colecciones.INSPECCIONES, it.id, it) }
+        p.averias.forEach { poner(Colecciones.AVERIAS, it.id, it) }
         withTimeout(TIEMPO_MAX_MS) { lote.commit().await() }
     }
 

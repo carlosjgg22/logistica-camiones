@@ -8,6 +8,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,6 +25,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.flota.despacho.FlotaApp
 import com.flota.despacho.R
+import com.flota.despacho.data.Momento
 import com.flota.despacho.data.db.ViajeDetalle
 import com.flota.despacho.ui.componentes.*
 import com.flota.despacho.ui.theme.colorDisponible
@@ -33,10 +35,14 @@ import kotlinx.coroutines.launch
 private const val MOSTRAR_TERMINADO_MS = 24 * 60 * 60 * 1000L
 
 /** El paso que le toca registrar al operador, con lo que se muestra en el pie fijo. */
-private enum class Paso(val titulo: String, val etiquetaHora: String, @DrawableRes val icono: Int, val secundario: Boolean) {
-    SALIDA("Registrar salida", "Hora de salida", R.drawable.ic_local_shipping_fill, true),
-    LLEGADA("Registrar llegada", "Hora de llegada", R.drawable.ic_flag_fill, false),
-    ENTREGA("Registrar entrega del producto", "Hora de entrega", R.drawable.ic_inventory_2_fill, false)
+private enum class Paso(
+    val titulo: String, val etiquetaHora: String, @DrawableRes val icono: Int, val secundario: Boolean,
+    /** El checklist que hay que hacer antes de este paso (la entrega no lleva). */
+    val momento: Momento?
+) {
+    SALIDA("Registrar salida", "Hora de salida", R.drawable.ic_local_shipping_fill, true, Momento.SALIDA),
+    LLEGADA("Registrar llegada", "Hora de llegada", R.drawable.ic_flag_fill, false, Momento.LLEGADA),
+    ENTREGA("Registrar entrega del producto", "Hora de entrega", R.drawable.ic_inventory_2_fill, false, null)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -65,6 +71,35 @@ fun OperadorScreen(app: FlotaApp, idOperador: String, onSalir: () -> Unit) {
     }
     val terminado = ui.terminado?.takeIf { t -> t.fechaEntrega?.let { ahora - it < MOSTRAR_TERMINADO_MS } == true }
 
+    // Antes de salir y de llegar va el checklist; una avería grave abierta en el chuto o la cisterna bloquea la salida
+    val momento = paso?.momento
+    val checklistHecho = viaje == null || momento == null ||
+        ui.inspecciones.any { it.idViaje == viaje.id && it.momento == momento.name }
+    val averiaGrave = viaje?.takeIf { paso == Paso.SALIDA }?.let { v ->
+        ui.averiasGraves.firstOrNull {
+            (it.idVehiculo != null && it.idVehiculo == v.idVehiculo) || (it.idTanque != null && it.idTanque == v.idTanque)
+        }
+    }
+    val bloqueo = averiaGrave?.let {
+        "No puedes salir: hay una avería grave sin resolver (${it.codigo} ${it.punto}). Llama a la oficina."
+    }
+
+    var enChecklist by rememberSaveable { mutableStateOf(false) }
+    if (enChecklist && viaje != null && momento != null && !checklistHecho) {
+        ChecklistScreen(
+            vm, viaje, momento,
+            onVolver = { enChecklist = false },
+            onGuardado = { averias ->
+                enChecklist = false
+                avisar(
+                    if (averias == 0) "Checklist guardado, sin novedades."
+                    else "Checklist guardado. ${averiasTexto(averias, 0).replaceFirstChar { it.uppercase() }} reportada${if (averias > 1) "s" else ""} a la oficina."
+                )
+            }
+        )
+        return
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -78,8 +113,13 @@ fun OperadorScreen(app: FlotaApp, idOperador: String, onSalir: () -> Unit) {
         },
         // Pie fijo: el botón del paso siempre se ve, aunque la tarjeta del viaje haga scroll
         bottomBar = {
-            if (viaje != null && paso != null) {
-                PieDePaso(paso, vm.error, vm::limpiarError) { h ->
+            if (viaje != null && paso != null && momento != null && !checklistHecho) {
+                PieChecklist(momento, bloqueo) {
+                    vm.empezarChecklist(viaje.id, momento)
+                    enChecklist = true
+                }
+            } else if (viaje != null && paso != null) {
+                PieDePaso(paso, vm.error, bloqueo, vm::limpiarError) { h ->
                     when (paso) {
                         Paso.SALIDA -> vm.registrarSalida(viaje.id, h) { avisar("Salida registrada. Buen viaje.") }
                         Paso.LLEGADA -> vm.registrarLlegada(viaje.id, h) {
@@ -239,9 +279,23 @@ private fun ViajeTerminado(v: ViajeDetalle) {
     }
 }
 
+/** Pie fijo antes de salir o de llegar: primero el checklist de la unidad. */
+@Composable
+private fun PieChecklist(momento: Momento, bloqueo: String?, onAbrir: () -> Unit) {
+    Column(
+        Modifier.navigationBarsPadding().padding(start = 16.dp, end = 16.dp, bottom = 18.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        Text("Checklist de ${momento.etiqueta}", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+        if (bloqueo != null) MensajeError(bloqueo)
+        else AvisoInfo("Antes de registrar la ${momento.etiqueta}, revisa el chuto y la cisterna.")
+        BotonGrande("Hacer checklist de ${momento.etiqueta}", onClick = onAbrir, icono = R.drawable.ic_fact_check_fill)
+    }
+}
+
 /** Pie fijo de un paso: título, hora (ahora o corregida) y botón, con confirmación. */
 @Composable
-private fun PieDePaso(paso: Paso, error: String?, onCambio: () -> Unit, onRegistrar: (Long) -> Unit) {
+private fun PieDePaso(paso: Paso, error: String?, bloqueo: String?, onCambio: () -> Unit, onRegistrar: (Long) -> Unit) {
     var elegida by remember(paso) { mutableStateOf<Long?>(null) }
     var confirmar by remember { mutableStateOf(false) }
 
@@ -253,8 +307,8 @@ private fun PieDePaso(paso: Paso, error: String?, onCambio: () -> Unit, onRegist
     ) {
         Text(paso.titulo, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
         CampoHora(paso.etiquetaHora, elegida) { elegida = it; onCambio() }
-        if (error != null) MensajeError(error)
-        BotonGrande(paso.titulo, onClick = { confirmar = true }, icono = paso.icono, secundario = paso.secundario)
+        (bloqueo ?: error)?.let { MensajeError(it) }
+        BotonGrande(paso.titulo, onClick = { confirmar = true }, icono = paso.icono, secundario = paso.secundario, enabled = bloqueo == null)
     }
 
     if (confirmar) {

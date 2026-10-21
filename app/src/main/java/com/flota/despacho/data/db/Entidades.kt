@@ -148,6 +148,54 @@ data class Programacion(
     val actualizado: Long = ahora()
 )
 
+/**
+ * Checklist CHK-CTR-01 hecho por el operador al salir o al llegar.
+ * [resultados] es JSON: [{"codigo":"1.1","resultado":"B","gravedad":null,"observacion":""}, …].
+ * Sin claves foráneas: puede bajar del servidor antes que su viaje sin romper la sincronización.
+ */
+@Entity(tableName = "inspeccion", indices = [Index("idViaje"), Index("idOperador")])
+data class Inspeccion(
+    @PrimaryKey val id: String = nuevoId(),
+    val idViaje: String,
+    val idUnidad: String,
+    val idOperador: String,
+    /** SALIDA o LLEGADA */
+    val momento: String,
+    val fecha: Long,
+    val kilometraje: Int,
+    val resultados: String,
+    val observaciones: String,
+    val pendienteSync: Boolean = true,
+    val actualizado: Long = ahora()
+)
+
+/**
+ * Un punto del checklist marcado M. Queda en el chuto ([idVehiculo]) o en la cisterna ([idTanque]),
+ * así sigue valiendo aunque la unidad se deshaga. Una GRAVE sin resolver bloquea la salida.
+ */
+@Entity(tableName = "averia", indices = [Index("idVehiculo"), Index("idTanque"), Index("idViaje")])
+data class Averia(
+    @PrimaryKey val id: String = nuevoId(),
+    val idInspeccion: String,
+    val idViaje: String,
+    val idUnidad: String,
+    val idOperador: String,
+    val idVehiculo: String?,
+    val idTanque: String?,
+    val codigo: String,
+    val punto: String,
+    /** LEVE o GRAVE */
+    val gravedad: String,
+    val observacion: String,
+    val momento: String,
+    val fecha: Long,
+    val resuelta: Boolean = false,
+    val fechaResuelta: Long? = null,
+    val resueltaPor: String? = null,
+    val pendienteSync: Boolean = true,
+    val actualizado: Long = ahora()
+)
+
 enum class EstadoViaje(val etiqueta: String) {
     SIN_PROGRAMAR("Sin programar"),
     PROGRAMADO("Programado"),
@@ -162,6 +210,8 @@ data class ViajeDetalle(
     val idRuta: String,
     val idUnidad: String?,
     val idOperador: String?,
+    val idVehiculo: String?,
+    val idTanque: String?,
     val numeroDespacho: String,
     val recorrido: String,
     val numeroFactura: String,

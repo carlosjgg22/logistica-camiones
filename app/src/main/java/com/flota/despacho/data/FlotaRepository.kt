@@ -8,6 +8,7 @@ import com.flota.despacho.sync.Colecciones
 import com.flota.despacho.sync.FirebaseSync
 import com.flota.despacho.sync.PaqueteSync
 import com.flota.despacho.sync.SyncWorker
+import com.google.gson.Gson
 import com.google.firebase.Firebase
 import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseNetworkException
@@ -29,6 +30,7 @@ import kotlinx.coroutines.flow.asStateFlow
 class FlotaRepository(private val db: AppDatabase, private val context: Context) {
 
     private val dao = db.dao()
+    private val gson = Gson()
     private val prefs = context.getSharedPreferences("sync", Context.MODE_PRIVATE)
 
     private val _ultimaSync = MutableStateFlow(prefs.getLong("ultimaSync", 0L).takeIf { it > 0 })
@@ -39,6 +41,8 @@ class FlotaRepository(private val db: AppDatabase, private val context: Context)
     fun viajeAbierto(idOperador: String) = dao.viajeAbierto(idOperador)
     fun proximoViaje(idOperador: String) = dao.proximoViaje(idOperador)
     fun ultimoTerminado(idOperador: String) = dao.ultimoTerminado(idOperador)
+    fun inspeccionesDe(idOperador: String) = dao.inspeccionesDe(idOperador)
+    fun averiasGravesAbiertas() = dao.averiasGravesAbiertas()
     fun viajes() = dao.viajes()
     fun viajesEnCurso() = dao.viajesEnCurso()
     fun operadores() = dao.operadores()
@@ -195,7 +199,67 @@ class FlotaRepository(private val db: AppDatabase, private val context: Context)
                 v.idUnidad == null -> "El viaje no tiene unidad asignada. Llama a la oficina."
                 v.idOperador != null && dao.operadorEnRuta(v.idOperador, v.id) -> "Ya tienes un viaje en curso."
                 dao.unidadEnRuta(v.idUnidad, v.id) -> "Esa unidad ya está en ruta en otro viaje. Llama a la oficina."
-                else -> { dao.guardarViajes(listOf(v.copy(fechaSalida = fecha, pendienteSync = true, actualizado = ahora()))); null }
+                !dao.hayInspeccion(v.id, Momento.SALIDA.name) -> "Primero haz el checklist de salida."
+                else -> averiaQueBloquea(v.idUnidad)?.let { a ->
+                    "No puedes salir: hay una avería grave sin resolver (${a.codigo} ${a.punto}). Llama a la oficina."
+                } ?: run {
+                    dao.guardarViajes(listOf(v.copy(fechaSalida = fecha, pendienteSync = true, actualizado = ahora())))
+                    null
+                }
+            }
+        }
+    }
+
+    /** La avería grave sin resolver del chuto o la cisterna de esa unidad, si hay. */
+    private suspend fun averiaQueBloquea(idUnidad: String): Averia? {
+        val u = dao.unidad(idUnidad) ?: return null
+        return dao.averiaGraveAbierta(u.idVehiculo, u.idTanque)
+    }
+
+    /**
+     * Guarda el checklist de salida o de llegada y crea una avería por cada punto en M.
+     * Las averías del chuto quedan en el vehículo y las de la cisterna en el tanque.
+     */
+    suspend fun guardarChecklist(
+        idViaje: String,
+        momento: Momento,
+        kilometraje: Int,
+        resultados: List<ResultadoPunto>,
+        observaciones: String
+    ): String? {
+        val faltan = PUNTOS_CHECKLIST.filter { p -> resultados.none { it.codigo == p.codigo } }
+        val sinDetalle = resultados.filter { it.resultado == Resultado.M.name && (it.gravedad == null || it.observacion.isBlank()) }
+        when {
+            faltan.isNotEmpty() -> return "Falta revisar: ${faltan.joinToString { it.codigo }}."
+            sinDetalle.isNotEmpty() -> return "En los puntos en M elige leve o grave y escribe qué pasa: ${sinDetalle.joinToString { it.codigo }}."
+        }
+        return guardando {
+            val v = dao.viaje(idViaje)
+            val u = v?.idUnidad?.let { dao.unidad(it) }
+            when {
+                v == null || u == null -> "No se encontró el viaje o su unidad."
+                dao.hayInspeccion(v.id, momento.name) -> null // ya estaba hecho
+                else -> {
+                    val t = ahora()
+                    val inspeccion = Inspeccion(
+                        idViaje = v.id, idUnidad = u.id, idOperador = u.idOperador, momento = momento.name,
+                        fecha = t, kilometraje = kilometraje, resultados = gson.toJson(resultados),
+                        observaciones = observaciones.trim(), actualizado = t
+                    )
+                    val averias = resultados.filter { it.resultado == Resultado.M.name }.map { r ->
+                        val punto = PUNTOS_CHECKLIST.first { it.codigo == r.codigo }
+                        Averia(
+                            idInspeccion = inspeccion.id, idViaje = v.id, idUnidad = u.id, idOperador = u.idOperador,
+                            idVehiculo = u.idVehiculo.takeIf { punto.seccion == Seccion.CHUTO },
+                            idTanque = u.idTanque.takeIf { punto.seccion == Seccion.CISTERNA },
+                            codigo = r.codigo, punto = punto.titulo, gravedad = r.gravedad!!,
+                            observacion = r.observacion.trim(), momento = momento.name, fecha = t, actualizado = t
+                        )
+                    }
+                    dao.guardarInspecciones(listOf(inspeccion))
+                    dao.guardarAverias(averias)
+                    null
+                }
             }
         }
     }
@@ -208,6 +272,8 @@ class FlotaRepository(private val db: AppDatabase, private val context: Context)
                 v?.fechaSalida == null -> "No se encontró el viaje."
                 v.fechaLlegada != null -> null
                 fecha < v.fechaSalida -> "La hora de llegada no puede ser anterior a la salida."
+                // Una avería grave al llegar no bloquea la llegada: queda abierta para la oficina
+                !dao.hayInspeccion(v.id, Momento.LLEGADA.name) -> "Primero haz el checklist de llegada."
                 else -> { dao.guardarViajes(listOf(v.copy(fechaLlegada = fecha, pendienteSync = true, actualizado = ahora()))); null }
             }
         }
@@ -259,6 +325,12 @@ class FlotaRepository(private val db: AppDatabase, private val context: Context)
         dao.programacionesPendientes().forEach {
             FirebaseSync.enviar(Colecciones.PROGRAMACIONES, it.id, it); dao.marcarProgramacionEnviada(it.id, it.actualizado)
         }
+        dao.inspeccionesPendientes().forEach {
+            FirebaseSync.enviar(Colecciones.INSPECCIONES, it.id, it); dao.marcarInspeccionEnviada(it.id, it.actualizado)
+        }
+        dao.averiasPendientes().forEach {
+            FirebaseSync.enviar(Colecciones.AVERIAS, it.id, it); dao.marcarAveriaEnviada(it.id, it.actualizado)
+        }
 
         // 2) Bajar lo que cambió en Firestore (otros teléfonos: operadores, oficina)
         val desde = prefs.getLong(CLAVE_DESDE, 0L)
@@ -281,6 +353,11 @@ class FlotaRepository(private val db: AppDatabase, private val context: Context)
             dao.guardarViajes(p.viajes.filter { it.id !in viajes }.map { it.copy(pendienteSync = false) })
             val programaciones = dao.programacionesPendientes().map { it.id }.toSet()
             dao.guardarProgramaciones(p.programaciones.filter { it.id !in programaciones }.map { it.copy(pendienteSync = false) })
+            val inspecciones = dao.inspeccionesPendientes().map { it.id }.toSet()
+            dao.guardarInspecciones(p.inspecciones.filter { it.id !in inspecciones }.map { it.copy(pendienteSync = false) })
+            // Así llega al teléfono que la oficina resolvió una avería (y se destraba la salida)
+            val averias = dao.averiasPendientes().map { it.id }.toSet()
+            dao.guardarAverias(p.averias.filter { it.id !in averias }.map { it.copy(pendienteSync = false) })
         }
         val t = ahora()
         prefs.edit().putLong(CLAVE_DESDE, p.horaServidor).putLong("ultimaSync", t).apply()

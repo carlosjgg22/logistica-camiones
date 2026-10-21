@@ -6,7 +6,7 @@ import androidx.room.Upsert
 import kotlinx.coroutines.flow.Flow
 
 const val CONSULTA_VIAJE = """
-    SELECT vj.id, vj.idRuta, vj.idUnidad, vj.idOperador,
+    SELECT vj.id, vj.idRuta, vj.idUnidad, vj.idOperador, u.idVehiculo, u.idTanque,
            r.numeroDespacho, r.recorrido, r.numeroFactura, vj.destino,
            v.matricula AS vehiculo, t.matricula AS tanque, t.volumenLitros, t.compartimientos,
            o.nombre || ' ' || o.apellido AS operador,
@@ -38,6 +38,8 @@ interface FlotaDao {
     @Upsert suspend fun guardarRutas(items: List<Ruta>)
     @Upsert suspend fun guardarViajes(items: List<Viaje>)
     @Upsert suspend fun guardarProgramaciones(items: List<Programacion>)
+    @Upsert suspend fun guardarInspecciones(items: List<Inspeccion>)
+    @Upsert suspend fun guardarAverias(items: List<Averia>)
 
     @Query("SELECT COUNT(*) FROM operador")
     suspend fun contarOperadores(): Int
@@ -180,6 +182,28 @@ interface FlotaDao {
     @Query("SELECT * FROM tipo_combustible ORDER BY nombre")
     fun combustibles(): Flow<List<TipoCombustible>>
 
+
+    // ---------- Checklist y averías ----------
+
+    /** Los checklists de este operador (para saber si ya hizo el de salida o el de llegada del viaje). */
+    @Query("SELECT * FROM inspeccion WHERE idOperador = :idOperador")
+    fun inspeccionesDe(idOperador: String): Flow<List<Inspeccion>>
+
+    @Query("SELECT * FROM averia WHERE resuelta = 0 AND gravedad = 'GRAVE' ORDER BY fecha DESC")
+    fun averiasGravesAbiertas(): Flow<List<Averia>>
+
+    /** Una avería grave sin resolver en ese chuto o esa cisterna: bloquea la salida. */
+    @Query(
+        """
+        SELECT * FROM averia WHERE resuelta = 0 AND gravedad = 'GRAVE'
+          AND (idVehiculo = :idVehiculo OR idTanque = :idTanque)
+        ORDER BY fecha DESC LIMIT 1
+        """
+    )
+    suspend fun averiaGraveAbierta(idVehiculo: String, idTanque: String): Averia?
+
+    @Query("SELECT EXISTS(SELECT 1 FROM inspeccion WHERE idViaje = :idViaje AND momento = :momento)")
+    suspend fun hayInspeccion(idViaje: String, momento: String): Boolean
     // ---------- Sincronización: lo que falta subir ----------
     @Query("SELECT * FROM operador WHERE pendienteSync = 1") suspend fun operadoresPendientes(): List<Operador>
     @Query("SELECT * FROM vehiculo WHERE pendienteSync = 1") suspend fun vehiculosPendientes(): List<Vehiculo>
@@ -188,6 +212,8 @@ interface FlotaDao {
     @Query("SELECT * FROM ruta WHERE pendienteSync = 1") suspend fun rutasPendientes(): List<Ruta>
     @Query("SELECT * FROM viaje WHERE pendienteSync = 1") suspend fun viajesPendientes(): List<Viaje>
     @Query("SELECT * FROM programacion WHERE pendienteSync = 1") suspend fun programacionesPendientes(): List<Programacion>
+    @Query("SELECT * FROM inspeccion WHERE pendienteSync = 1") suspend fun inspeccionesPendientes(): List<Inspeccion>
+    @Query("SELECT * FROM averia WHERE pendienteSync = 1") suspend fun averiasPendientes(): List<Averia>
 
     // Solo marca como enviado si nadie lo modificó mientras se subía.
     @Query("UPDATE operador SET pendienteSync = 0 WHERE id = :id AND actualizado = :actualizado")
@@ -204,6 +230,10 @@ interface FlotaDao {
     suspend fun marcarViajeEnviado(id: String, actualizado: Long)
     @Query("UPDATE programacion SET pendienteSync = 0 WHERE id = :id AND actualizado = :actualizado")
     suspend fun marcarProgramacionEnviada(id: String, actualizado: Long)
+    @Query("UPDATE inspeccion SET pendienteSync = 0 WHERE id = :id AND actualizado = :actualizado")
+    suspend fun marcarInspeccionEnviada(id: String, actualizado: Long)
+    @Query("UPDATE averia SET pendienteSync = 0 WHERE id = :id AND actualizado = :actualizado")
+    suspend fun marcarAveriaEnviada(id: String, actualizado: Long)
 
     @Query(
         """
@@ -214,6 +244,8 @@ interface FlotaDao {
              + (SELECT COUNT(*) FROM ruta WHERE pendienteSync = 1)
              + (SELECT COUNT(*) FROM viaje WHERE pendienteSync = 1)
              + (SELECT COUNT(*) FROM programacion WHERE pendienteSync = 1)
+             + (SELECT COUNT(*) FROM inspeccion WHERE pendienteSync = 1)
+             + (SELECT COUNT(*) FROM averia WHERE pendienteSync = 1)
         """
     )
     fun pendientes(): Flow<Int>
